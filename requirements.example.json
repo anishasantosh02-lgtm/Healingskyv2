@@ -1,0 +1,21 @@
+{
+  "baseUrl": "https://example.com",
+  "scenarios": [
+    {
+      "name": "Homepage loads correctly",
+      "criteria": "The homepage should load without errors and display a clear page title/heading describing what the site is."
+    },
+    {
+      "name": "Search returns relevant results",
+      "criteria": "Searching for a common product term should return a results page with at least one matching item, not an error or empty state."
+    },
+    {
+      "name": "Login form validates empty submission",
+      "criteria": "Submitting the login form with both fields empty should show a validation error and must NOT log the user in or navigate away."
+    },
+    {
+      "name": "Add to cart updates cart count",
+      "criteria": "Clicking 'Add to cart' on a product should update the visible cart item count, and the added item should appear in the cart page."
+    }
+  ]
+}

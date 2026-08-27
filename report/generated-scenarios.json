@@ -1,0 +1,320 @@
+{
+  "generatedAt": "2026-08-27T07:15:56.231Z",
+  "runnerVersion": "startMode-dependency-credentials-v3",
+  "baseUrl": "https://prod-turningwell.dreamstechnologies.com/",
+  "scenarios": [
+    {
+      "id": "CLIENT-001-POSITIVE-01",
+      "requirementId": "CLIENT-001",
+      "sequence": 1,
+      "startMode": "base_url",
+      "dependsOn": [],
+      "type": "navigation",
+      "name": "Load Healing Sky homepage and verify main navigation controls",
+      "criteria": "The Healing Sky homepage should load successfully and display the main navigation controls including Sign In and Join Healing Sky.",
+      "priority": "critical",
+      "preconditions": [],
+      "testData": {},
+      "startState": "Healing Sky homepage is not yet loaded.",
+      "endState": "Healing Sky homepage is loaded with main navigation controls Sign In and Join Healing Sky visible."
+    },
+    {
+      "id": "SIGNIN-001-POSITIVE-01",
+      "requirementId": "SIGNIN-001",
+      "sequence": 2,
+      "startMode": "continue",
+      "dependsOn": [
+        "CLIENT-001-POSITIVE-01"
+      ],
+      "type": "navigation",
+      "name": "Open Sign In menu on homepage",
+      "criteria": "Clicking Sign In opens the Sign In menu and displays both the I'm a Client and I'm a Provider options.",
+      "priority": "high",
+      "preconditions": [
+        "Healing Sky homepage is loaded."
+      ],
+      "testData": {},
+      "startState": "Healing Sky homepage is loaded.",
+      "endState": "Sign In menu is open and displays I'm a Client and I'm a Provider options."
+    },
+    {
+      "id": "SIGNIN-002-POSITIVE-01",
+      "requirementId": "SIGNIN-002",
+      "sequence": 3,
+      "startMode": "continue",
+      "dependsOn": [
+        "SIGNIN-001-POSITIVE-01"
+      ],
+      "type": "navigation",
+      "name": "Open client sign-in page",
+      "criteria": "With the Sign In menu open, selecting I'm a Client opens the client sign-in page or client authentication interface.",
+      "priority": "high",
+      "preconditions": [
+        "Sign In menu is open."
+      ],
+      "testData": {},
+      "startState": "Sign In menu is open.",
+      "endState": "Client sign-in page is open."
+    },
+    {
+      "id": "CLIENT-LOGIN-001-POSITIVE-01",
+      "requirementId": "CLIENT-LOGIN-001",
+      "sequence": 4,
+      "startMode": "continue",
+      "dependsOn": [
+        "SIGNIN-002-POSITIVE-01"
+      ],
+      "type": "ui",
+      "name": "Verify client sign-in page controls",
+      "criteria": "The client sign-in page should display the Client Login heading, Email field, OTP delivery options for Email and SMS, and the Log in button.",
+      "priority": "critical",
+      "preconditions": [
+        "Client sign-in page is open."
+      ],
+      "testData": {},
+      "startState": "Client sign-in page is open.",
+      "endState": "Client sign-in page UI elements are verified."
+    },
+    {
+      "id": "CLIENT-LOGIN-002-POSITIVE-01",
+      "requirementId": "CLIENT-LOGIN-002",
+      "sequence": 5,
+      "startMode": "continue",
+      "dependsOn": [
+        "CLIENT-LOGIN-001-POSITIVE-01"
+      ],
+      "type": "ui",
+      "name": "Select Email as OTP delivery method",
+      "criteria": "The user can select Email as the OTP delivery method on the client sign-in page.",
+      "priority": "medium",
+      "preconditions": [
+        "Client sign-in page is open."
+      ],
+      "testData": {},
+      "startState": "Client sign-in page is open with OTP delivery options visible.",
+      "endState": "Email is selected as the OTP delivery method."
+    },
+    {
+      "id": "CLIENT-LOGIN-003-POSITIVE-01",
+      "requirementId": "CLIENT-LOGIN-003",
+      "sequence": 6,
+      "startMode": "continue",
+      "dependsOn": [
+        "CLIENT-LOGIN-002-POSITIVE-01"
+      ],
+      "type": "positive",
+      "name": "Log in with Email OTP",
+      "criteria": "Using the configured valid client test email, selecting Email as the OTP delivery method, and clicking Log in opens the client OTP verification screen.",
+      "priority": "critical",
+      "preconditions": [
+        "Email is selected as the OTP delivery method."
+      ],
+      "testData": {},
+      "startState": "Client sign-in page is open with Email as OTP delivery method.",
+      "endState": "Client OTP verification screen is open."
+    },
+    {
+      "id": "CLIENT-LOGIN-004-POSITIVE-01",
+      "requirementId": "CLIENT-LOGIN-004",
+      "sequence": 7,
+      "startMode": "continue",
+      "dependsOn": [
+        "CLIENT-LOGIN-003-POSITIVE-01"
+      ],
+      "type": "ui",
+      "name": "Verify client OTP verification screen controls",
+      "criteria": "The client OTP verification screen should display the Enter Verification Code heading, OTP entry fields, resend code control or countdown, Verify button, and Back control.",
+      "priority": "high",
+      "preconditions": [
+        "Client OTP verification screen is open."
+      ],
+      "testData": {},
+      "startState": "Client OTP verification screen is open.",
+      "endState": "Client OTP verification screen UI elements are verified."
+    },
+    {
+      "id": "CLIENT-LOGIN-005-POSITIVE-01",
+      "requirementId": "CLIENT-LOGIN-005",
+      "sequence": 8,
+      "startMode": "continue",
+      "dependsOn": [
+        "CLIENT-LOGIN-004-POSITIVE-01"
+      ],
+      "type": "positive",
+      "name": "Authenticate using OTP bypass",
+      "criteria": "Entering the configured client test OTP bypass value into the OTP verification fields and clicking Verify successfully authenticates the client and opens the authenticated client dashboard.",
+      "priority": "critical",
+      "preconditions": [
+        "Client OTP verification screen is open."
+      ],
+      "testData": {},
+      "startState": "Client OTP verification screen is open.",
+      "endState": "Authenticated client dashboard is open."
+    },
+    {
+      "id": "CLIENT-LOGIN-006-POSITIVE-01",
+      "requirementId": "CLIENT-LOGIN-006",
+      "sequence": 9,
+      "startMode": "continue",
+      "dependsOn": [
+        "CLIENT-LOGIN-005-POSITIVE-01"
+      ],
+      "type": "positive",
+      "name": "Log out from authenticated client dashboard",
+      "criteria": "After successful client authentication, the user can log out successfully and return to the public or client sign-in interface.",
+      "priority": "high",
+      "preconditions": [
+        "Authenticated client dashboard is open."
+      ],
+      "testData": {},
+      "startState": "Authenticated client dashboard is open.",
+      "endState": "User is logged out and returned to the public or client sign-in interface."
+    },
+    {
+      "id": "SIGNIN-003-POSITIVE-01",
+      "requirementId": "SIGNIN-003",
+      "sequence": 10,
+      "startMode": "base_url",
+      "dependsOn": [],
+      "type": "navigation",
+      "name": "Open provider sign-in page from Sign In menu",
+      "criteria": "From the Healing Sky homepage, opening the Sign In menu and selecting I'm a Provider opens the provider sign-in page or provider authentication interface.",
+      "priority": "high",
+      "preconditions": [
+        "Healing Sky homepage is loaded."
+      ],
+      "testData": {},
+      "startState": "Healing Sky homepage is loaded.",
+      "endState": "Provider sign-in page is open."
+    },
+    {
+      "id": "CLIENT-002-POSITIVE-01",
+      "requirementId": "CLIENT-002",
+      "sequence": 11,
+      "startMode": "base_url",
+      "dependsOn": [],
+      "type": "navigation",
+      "name": "Open Join Healing Sky options from navigation",
+      "criteria": "From the Healing Sky homepage, clicking Join Healing Sky in the main navigation opens the joining options and displays the Join as a Client option.",
+      "priority": "high",
+      "preconditions": [
+        "Healing Sky homepage is loaded."
+      ],
+      "testData": {},
+      "startState": "Healing Sky homepage is loaded.",
+      "endState": "Join Healing Sky options are open."
+    },
+    {
+      "id": "CLIENT-003-POSITIVE-01",
+      "requirementId": "CLIENT-003",
+      "sequence": 12,
+      "startMode": "continue",
+      "dependsOn": [
+        "CLIENT-002-POSITIVE-01"
+      ],
+      "type": "navigation",
+      "name": "Open client registration page from Join Healing Sky options",
+      "criteria": "With the Join Healing Sky options open, selecting Join as a Client opens the client registration page or client registration interface.",
+      "priority": "high",
+      "preconditions": [
+        "Join Healing Sky options are open."
+      ],
+      "testData": {},
+      "startState": "Join Healing Sky options are open.",
+      "endState": "Client registration page is open."
+    },
+    {
+      "id": "CLIENT-004-POSITIVE-01",
+      "requirementId": "CLIENT-004",
+      "sequence": 13,
+      "startMode": "continue",
+      "dependsOn": [
+        "CLIENT-003-POSITIVE-01"
+      ],
+      "type": "ui",
+      "name": "Verify client registration interface",
+      "criteria": "The client registration interface should display the information fields and controls required to begin client registration.",
+      "priority": "high",
+      "preconditions": [
+        "Client registration page is open."
+      ],
+      "testData": {},
+      "startState": "Client registration page is open.",
+      "endState": "Client registration interface fields and controls are verified."
+    },
+    {
+      "id": "CLIENT-005-POSITIVE-01",
+      "requirementId": "CLIENT-005",
+      "sequence": 14,
+      "startMode": "continue",
+      "dependsOn": [
+        "CLIENT-004-POSITIVE-01"
+      ],
+      "type": "positive",
+      "name": "Begin client registration process",
+      "criteria": "The client registration interface provides a clear action such as Continue, Next, Register, or Submit to proceed with registration.",
+      "priority": "medium",
+      "preconditions": [
+        "Client registration page is open."
+      ],
+      "testData": {},
+      "startState": "Client registration page is open with fields and controls verified.",
+      "endState": "Registration action is initiated."
+    },
+    {
+      "id": "CLIENT-006-POSITIVE-01",
+      "requirementId": "CLIENT-006",
+      "sequence": 15,
+      "startMode": "base_url",
+      "dependsOn": [],
+      "type": "navigation",
+      "name": "Open Join Healing Sky options from homepage hero",
+      "criteria": "From the Healing Sky homepage, clicking the Join Healing Sky call-to-action in the homepage hero section opens the joining options.",
+      "priority": "high",
+      "preconditions": [
+        "Healing Sky homepage is loaded."
+      ],
+      "testData": {},
+      "startState": "Healing Sky homepage is loaded.",
+      "endState": "Join Healing Sky options are open from the homepage hero."
+    },
+    {
+      "id": "CLIENT-007-POSITIVE-01",
+      "requirementId": "CLIENT-007",
+      "sequence": 16,
+      "startMode": "continue",
+      "dependsOn": [
+        "CLIENT-006-POSITIVE-01"
+      ],
+      "type": "ui",
+      "name": "Verify Join as a Client option in hero CTA",
+      "criteria": "With the joining options opened from the homepage hero section, the Join as a Client option is displayed.",
+      "priority": "medium",
+      "preconditions": [
+        "Join Healing Sky options are open from the homepage hero."
+      ],
+      "testData": {},
+      "startState": "Join Healing Sky options are open from the homepage hero.",
+      "endState": "Join as a Client option is displayed in the hero CTA."
+    },
+    {
+      "id": "CLIENT-008-POSITIVE-01",
+      "requirementId": "CLIENT-008",
+      "sequence": 17,
+      "startMode": "continue",
+      "dependsOn": [
+        "CLIENT-007-POSITIVE-01"
+      ],
+      "type": "navigation",
+      "name": "Open client registration page from homepage hero options",
+      "criteria": "With the homepage hero joining options open, selecting Join as a Client opens the client registration page or client registration interface.",
+      "priority": "high",
+      "preconditions": [
+        "Join Healing Sky options are open from the homepage hero section."
+      ],
+      "testData": {},
+      "startState": "Join Healing Sky options are open from the homepage hero.",
+      "endState": "Client registration page is open."
+    }
+  ]
+}

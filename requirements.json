@@ -1,0 +1,78 @@
+{
+  "baseUrl": "https://prod-turningwell.dreamstechnologies.com/",
+
+  "requirements": [
+    {
+      "id": "CLIENT-001",
+      "description": "The Healing Sky homepage should load successfully and display the main navigation controls, including Sign In and Join Healing Sky."
+    },
+
+    {
+      "id": "SIGNIN-001",
+      "description": "Clicking the Sign In control in the Healing Sky main navigation should open the Sign In menu and display both the I'm a Client option and the I'm a Provider option."
+    },
+    {
+      "id": "SIGNIN-002",
+      "description": "With the Sign In menu open, selecting the I'm a Client option should open the client sign-in page or client authentication interface."
+    },
+
+    {
+      "id": "CLIENT-LOGIN-001",
+      "description": "The client sign-in page should load successfully and display the Client Login heading, Email field, OTP delivery options for Email and SMS, and the Log in button."
+    },
+    {
+      "id": "CLIENT-LOGIN-002",
+      "description": "The client sign-in page should allow the user to select Email as the OTP delivery method."
+    },
+    {
+      "id": "CLIENT-LOGIN-003",
+      "description": "Using the configured valid client test email, selecting Email as the OTP delivery method, and clicking Log in should open the client OTP verification screen."
+    },
+    {
+      "id": "CLIENT-LOGIN-004",
+      "description": "The client OTP verification screen should display the Enter Verification Code heading, OTP entry fields, resend code control or countdown, Verify button, and Back control."
+    },
+    {
+      "id": "CLIENT-LOGIN-005",
+      "description": "Entering the configured client test OTP bypass value into the OTP verification fields and clicking Verify should successfully authenticate the client and open the authenticated client dashboard."
+    },
+    {
+      "id": "CLIENT-LOGIN-006",
+      "description": "After successful client authentication and dashboard verification, the user should be able to log out successfully and return to the public or client sign-in interface."
+    },
+    {
+      "id": "SIGNIN-003",
+      "description": "From the Healing Sky homepage, opening the Sign In menu and selecting the I'm a Provider option should open the provider sign-in page or provider authentication interface."
+    },
+
+    {
+      "id": "CLIENT-002",
+      "description": "From the Healing Sky homepage, clicking Join Healing Sky in the main navigation should open the joining options and display the Join as a Client option."
+    },
+    {
+      "id": "CLIENT-003",
+      "description": "With the Join Healing Sky options open, selecting Join as a Client should open the client registration page or client registration interface."
+    },
+    {
+      "id": "CLIENT-004",
+      "description": "The client registration interface should display the information fields and controls required to begin client registration."
+    },
+    {
+      "id": "CLIENT-005",
+      "description": "The client registration interface should provide a clear action such as Continue, Next, Register, or Submit to proceed with registration."
+    },
+
+    {
+      "id": "CLIENT-006",
+      "description": "From the Healing Sky homepage, clicking the Join Healing Sky call-to-action in the homepage hero section should open the joining options."
+    },
+    {
+      "id": "CLIENT-007",
+      "description": "With the joining options opened from the homepage hero section, the Join as a Client option should be displayed."
+    },
+    {
+      "id": "CLIENT-008",
+      "description": "With the homepage hero joining options open, selecting Join as a Client should open the client registration page or client registration interface."
+    }
+  ]
+}
