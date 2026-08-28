@@ -4281,6 +4281,40 @@ ${
 
 
 ============================================================
+TEST DATA FOR THIS SCENARIO
+============================================================
+
+${
+  scenario.testData &&
+  Object.keys(
+    scenario.testData
+  ).length >
+    0
+    ? JSON.stringify(
+        scenario.testData,
+        null,
+        2
+      )
+    : "None. This scenario needs no typed values."
+}
+
+These are the EXACT values to enter. They are generated fresh for this
+run, so they are the only correct values.
+
+Use them verbatim. Never invent a name, email, phone number, date or
+address, and never substitute a value that appears anywhere in these
+instructions. If a field needs a value and no value for it is listed
+above, look for it in the acceptance criteria rather than making one
+up.
+
+Where a value is nested, for example a date of birth object, use each
+part for its matching control.
+
+For dates in particular: select exactly the month, day and year given
+here. Do not accept a dropdown's first option as a substitute.
+
+
+============================================================
 RUNTIME CREDENTIALS
 ============================================================
 
@@ -4388,11 +4422,15 @@ single step:
 
 select_options({
   "selections": [
-    { "trigger_agent_id": "e14", "option_text": "June" },
-    { "trigger_agent_id": "e17", "option_text": "4" },
-    { "trigger_agent_id": "e20", "option_text": "1999" }
+    { "trigger_agent_id": "<id of first dropdown>",  "option_text": "<option named by the scenario>" },
+    { "trigger_agent_id": "<id of second dropdown>", "option_text": "<option named by the scenario>" },
+    { "trigger_agent_id": "<id of third dropdown>",  "option_text": "<option named by the scenario>" }
   ]
 })
+
+Every "option_text" must be the exact value the scenario asks for. The
+angle-bracket placeholders above are shape, not content: never select
+an option because it appears in these instructions.
 
 Set ALL of the dropdowns a scenario asks for in ONE call. Setting one
 and assuming the rest followed is the most common way these scenarios
@@ -4434,13 +4472,18 @@ calls:
 
 fill_form({
   "fields": [
-    { "agent_id": "e8",  "text": "Taylor Mercer" },
-    { "agent_id": "e9",  "text": "taylor@example.com" },
-    { "agent_id": "e10", "text": "+15551234567" }
+    { "agent_id": "<id of first field>",  "text": "<its value from the scenario>" },
+    { "agent_id": "<id of second field>", "text": "<its value from the scenario>" },
+    { "agent_id": "<id of third field>",  "text": "<its value from the scenario>" }
   ]
 })
 
 All agent_ids must come from the SAME get_page_state snapshot.
+
+Every "text" value must be copied from the scenario description or its
+test data. The angle-bracket placeholders above are shape, not content:
+never type them, and never type a value that appears in these
+instructions rather than in the scenario.
 
 This matters: filling fields one at a time across several turns is how
 fields get silently skipped and forms get submitted incomplete.
