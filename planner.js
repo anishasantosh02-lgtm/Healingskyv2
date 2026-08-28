@@ -353,6 +353,86 @@ export async function generateScenarios({
 
 
   // ==========================================================
+  // Registration email exemption
+  // ==========================================================
+  //
+  // A generic "email" testData key is only stripped when the planner
+  // invented it. An email supplied by the requirements file -- e.g.
+  // dynamic registration data resolved from an {{email}} placeholder
+  // -- appears verbatim in a requirement description and is ordinary,
+  // non-secret test data that a sign-up form legitimately needs.
+  //
+  // The configured sign-in email is never allowed through, regardless
+  // of where it appears.
+  //
+  // ==========================================================
+
+  const requirementCorpus =
+    requirements
+      .map(
+        (item) =>
+          String(
+            item?.description ||
+            ""
+          )
+      )
+      .join(
+        "\n"
+      );
+
+
+  const configuredClientEmail =
+    process.env
+      .CLIENT_TEST_EMAIL ||
+    "";
+
+
+  function isSuppliedRegistrationEmail(
+    key,
+    value
+  ) {
+
+    if (
+      String(
+        key
+      ).toLowerCase() !==
+      "email"
+    ) {
+
+      return false;
+    }
+
+
+    if (
+      typeof value !==
+        "string" ||
+      value.trim() ===
+        ""
+    ) {
+
+      return false;
+    }
+
+
+    if (
+      configuredClientEmail &&
+      value.trim().toLowerCase() ===
+        configuredClientEmail
+          .trim()
+          .toLowerCase()
+    ) {
+
+      return false;
+    }
+
+
+    return requirementCorpus.includes(
+      value.trim()
+    );
+  }
+
+
+  // ==========================================================
   // Planner system prompt
   // ==========================================================
 
@@ -670,6 +750,17 @@ refreshToken
 
 unless the requirement explicitly describes ordinary non-authentication
 data with the same word, which is unusual.
+
+REGISTRATION EXCEPTION:
+
+When a requirement spells out a literal email address to type into a
+registration, sign-up or onboarding form -- for example "Email: type
+literal text 'sam.reed.k92x@yopmail.com'" -- that address is ordinary
+test data for creating a NEW account, not a configured credential.
+
+Copy it verbatim into testData.email and keep it in the scenario
+description. Do not blank it, do not substitute a placeholder, and do
+not replace it with the configured sign-in email.
 
 Configured authentication values belong to runtime configuration, not
 the generated scenario.
@@ -1552,6 +1643,23 @@ Important:
           )
       ) {
 
+        if (
+          isSuppliedRegistrationEmail(
+            key,
+            scenario.testData[
+              key
+            ]
+          )
+        ) {
+
+          console.log(
+            `Keeping requirement-supplied registration email for ${scenario.id}.`
+          );
+
+          continue;
+        }
+
+
         console.warn(
           `Planner supplied authentication-related testData "${key}" for ${scenario.id}; removing it.`
         );
@@ -1882,6 +1990,19 @@ Important:
           key.toLowerCase()
         )
       ) {
+
+        if (
+          isSuppliedRegistrationEmail(
+            key,
+            scenario.testData[
+              key
+            ]
+          )
+        ) {
+
+          continue;
+        }
+
 
         throw new Error(
           `Scenario ${scenario.id} contains forbidden authentication testData key "${key}".`

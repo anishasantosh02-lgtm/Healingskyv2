@@ -66,6 +66,11 @@ import { chromium } from "playwright";
 
 import { runScenario } from "./agent.js";
 import { generateScenarios } from "./planner.js";
+import {
+  generateTestData,
+  resolveTemplates,
+  findPlaceholders,
+} from "./testdata.js";
 
 
 dotenv.config();
@@ -103,6 +108,13 @@ const GENERATED_SCENARIOS_FILE =
   path.join(
     OUTPUT_DIR,
     "generated-scenarios.json"
+  );
+
+
+const TEST_DATA_FILE =
+  path.join(
+    OUTPUT_DIR,
+    "test-data.json"
   );
 
 
@@ -646,7 +658,8 @@ async function buildDependencyBlockedResult({
 function buildMarkdownReport(
   results,
   baseUrl,
-  scenarios
+  scenarios,
+  testData
 ) {
 
   const passed =
@@ -695,6 +708,46 @@ function buildMarkdownReport(
 
   md +=
     `**Summary:** ${passed} passed, ${failed} failed, ${blocked} blocked\n\n`;
+
+
+  // ----------------------------------------------------------
+  // Dynamic test data used by this run
+  // ----------------------------------------------------------
+
+  if (
+    testData &&
+    Object.keys(
+      testData
+    ).length >
+      0
+  ) {
+
+    md +=
+      "### Dynamic test data\n\n";
+
+
+    md +=
+      "| Field | Value |\n| --- | --- |\n";
+
+
+    for (
+      const [
+        key,
+        value,
+      ] of
+      Object.entries(
+        testData
+      )
+    ) {
+
+      md +=
+        `| ${key} | ${value} |\n`;
+    }
+
+
+    md +=
+      "\n";
+  }
 
 
   md +=
@@ -964,7 +1017,11 @@ async function main() {
     baseUrl:
       rawBaseUrl,
 
-    requirements,
+    requirements:
+      rawRequirements,
+
+    testData:
+      testDataOverrides,
   } =
     loadRequirements();
 
@@ -973,6 +1030,94 @@ async function main() {
     normalizeUrl(
       rawBaseUrl
     );
+
+
+  // ----------------------------------------------------------
+  // Dynamic test data
+  // ----------------------------------------------------------
+  //
+  // Requirement descriptions may contain {{placeholder}} tokens.
+  // They are resolved here, before planning, so every run uses a
+  // fresh name / email / phone / address and registration is not
+  // blocked by duplicate-account errors.
+  //
+  // ----------------------------------------------------------
+
+  const testData =
+    generateTestData(
+      testDataOverrides ||
+      {}
+    );
+
+
+  const requirements =
+    resolveTemplates(
+      rawRequirements,
+      testData
+    );
+
+
+  const unresolvedPlaceholders =
+    Array.from(
+      findPlaceholders(
+        requirements
+      )
+    );
+
+
+  if (
+    unresolvedPlaceholders.length >
+    0
+  ) {
+
+    console.warn(
+      `Unresolved placeholders in ${REQUIREMENTS_FILE}: ${
+        unresolvedPlaceholders.join(
+          ", "
+        )
+      }`
+    );
+  }
+
+
+  console.log(
+    "\nGenerated test data for this run:"
+  );
+
+
+  for (
+    const [
+      key,
+      value,
+    ] of
+    Object.entries(
+      testData
+    )
+  ) {
+
+    console.log(
+      `  ${key}: ${value}`
+    );
+  }
+
+
+  fs.mkdirSync(
+    OUTPUT_DIR,
+    {
+      recursive:
+        true,
+    }
+  );
+
+
+  fs.writeFileSync(
+    TEST_DATA_FILE,
+    JSON.stringify(
+      testData,
+      null,
+      2
+    )
+  );
 
 
   // ----------------------------------------------------------
@@ -2164,7 +2309,8 @@ async function main() {
     buildMarkdownReport(
       results,
       baseUrl,
-      scenarios
+      scenarios,
+      testData
     );
 
 

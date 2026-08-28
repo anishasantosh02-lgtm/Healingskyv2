@@ -8,7 +8,11 @@
     },
     {
       "id": "CLIENT-REG-002",
-      "description": "On the client registration page: 1. Full Name: type literal text 'Alex Morgan'. 2. Email: type literal text 'alex_random_test_99@yopmail.com' without using credential_key. 3. Phone Country Code: click the country code dropdown selector and select '+1' or 'United States (+1)'. 4. Phone Number: type literal text '2025550143'. 5. Date of Birth: select Month 'June', Date '4', Year '1999'. 6. Address Lookup: type '1 Wall St, New York, NY' and click the address suggestion. 7. Referral Code: type 'NAN5EM09'. 8. Click Submit to register."
+      "description": "On the client registration page, fill everything EXCEPT the phone number, which is deliberately left until last because setting the Date of Birth re-renders the form and clears the phone widget. Do not submit in this scenario. Step 1: call get_page_state, then use a SINGLE fill_form call for these four fields, matching each input by its name or placeholder rather than by position: the input named 'fullName' gets '{{fullName}}'; the input named 'email' gets '{{email}}' as literal text with no credential_key; the input with placeholder 'Address Lookup' gets '{{addressLookup}}'; the input named 'referral_code' gets '{{referralCode}}'. Step 2: set all three Date of Birth dropdowns with a SINGLE select_options call containing Month '{{dobMonth}}', Date '{{dobDate}}' and Year '{{dobYear}}' together. Never click the small country flag beside the phone number. Step 3: call get_page_state and confirm the four text inputs hold real values rather than placeholder text, that the address shows a full resolved address including a postcode, and that the dropdowns show '{{dobMonth}}', '{{dobDate}}' and '{{dobYear}}'. The scenario passes when those four inputs and the three dropdowns are all set."
+    },
+    {
+      "id": "CLIENT-REG-003",
+      "description": "Continuing on the client registration page with every other field already set, enter the phone number last and submit. 1. Call get_page_state. 2. Type '{{phoneE164}}' into the input named 'phoneNumber', keeping the leading +1 because that is what selects the United States country code. Never click the small country flag beside the field, and do not touch the Date of Birth dropdowns again, because doing so clears the phone widget. 3. Call get_page_state and confirm the phone field now shows the full number, formatted as something like '+1 (718) 459-3842'. If it shows only a dialling code such as '+1' with no digits then it is still empty, so type it again before continuing. 4. Click Submit. 5. Wait 5000 ms, call get_page_state, and if nothing has changed wait a further 3000 ms and inspect again. Registration succeeded if EITHER the message 'Registration completed successfully' is displayed OR the application navigates to the client login page (/client/login); either outcome is a pass. If the phone field is reported invalid, re-enter it and submit once more before judging the scenario."
     },
     {
       "id": "CLIENT-AUTH-001",
@@ -16,11 +20,11 @@
     },
     {
       "id": "CLIENT-AUTH-002",
-      "description": "On the client OTP verification screen, enter the configured OTP bypass value 1234 using credential_key clientOtp into the OTP fields, click Verify, and confirm that the authenticated client dashboard (/client/dashboard) is displayed."
+      "description": "On the client OTP verification screen, enter the configured OTP bypass value 1234 using credential_key clientOtp into the OTP fields and click Verify. Confirm the sign-in success message 'OTP verified successfully' is displayed, then confirm the authenticated client dashboard (/client/dashboard) is displayed."
     },
     {
       "id": "CLIENT-AUTH-003",
-      "description": "From the authenticated client dashboard, click the user profile avatar or account dropdown menu to reveal the account options, then click Log Out or Logout to complete log out."
+      "description": "From the authenticated client dashboard, click the user profile avatar or account dropdown menu in the header to reveal the account options, click the log out control, confirm any logout confirmation dialog if one appears, and verify the client is signed out and returned to the Healing Sky homepage with the Log in option visible again."
     }
   ]
 }
