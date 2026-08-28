@@ -52,6 +52,10 @@ import path from "node:path";
 
 import dotenv from "dotenv";
 import { callLLM } from "./llmclient.js";
+import {
+  highlightAgentElement,
+  highlightLocator,
+} from "./visualcursor.js";
 
 dotenv.config();
 
@@ -2030,6 +2034,17 @@ async function clickElement(
   }
 
 
+  // Show where this click is about to land. Done before the click so
+  // the marker is visible even when the click navigates away, and it
+  // covers forced clicks and hidden-input fallbacks that emit no
+  // real mouse event of their own.
+
+  await highlightAgentElement(
+    page,
+    agentId
+  );
+
+
   try {
     const isOptionTag = await element.evaluate((el) => el.tagName.toLowerCase() === "option").catch(() => false);
     if (isOptionTag) {
@@ -2281,6 +2296,15 @@ async function typeText(
       timeout:
         10000,
     });
+
+
+  // Mark the field being filled, so a watcher can follow the form
+  // being completed field by field.
+
+  await highlightAgentElement(
+    page,
+    agentId
+  );
 
 
   try {
@@ -2667,6 +2691,7 @@ async function typeText(
       await page.waitForTimeout(800);
       const suggestion = page.locator(".pac-container .pac-item, [class*='pac-item'], [class*='suggestion-item'], [id*='typeahead'] li").first();
       if ((await suggestion.count()) > 0 && (await suggestion.isVisible())) {
+        await highlightLocator(page, suggestion);
         await suggestion.click({ timeout: 3000 }).catch(() => {});
         await page.waitForTimeout(400);
       }
@@ -2778,6 +2803,12 @@ async function selectOptions(
         );
 
 
+      await highlightAgentElement(
+        page,
+        triggerId
+      );
+
+
       await trigger.click({
         timeout:
           15000,
@@ -2851,6 +2882,14 @@ async function selectOptions(
           text ===
           wanted
         ) {
+
+          // Options carry no data-agent-id, so highlight by geometry.
+
+          await highlightLocator(
+            page,
+            option
+          );
+
 
           await option.click({
             timeout:

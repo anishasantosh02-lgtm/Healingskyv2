@@ -72,6 +72,8 @@ import {
   findPlaceholders,
 } from "./testdata.js";
 
+import { installClickVisualizer } from "./visualcursor.js";
+
 
 dotenv.config();
 
@@ -1587,6 +1589,44 @@ async function main() {
           900,
       },
     });
+
+
+  // ==========================================================
+  // Click visualisation
+  // ==========================================================
+  //
+  // Playwright moves the real mouse, but the pointer is invisible, so
+  // a watcher cannot see what the agent touched. This overlay draws a
+  // cursor, a click ripple and an outline on the element acted on.
+  //
+  // On by default whenever the run is headed; force either way with
+  // VISUAL_CLICKS.
+  //
+  // ==========================================================
+
+  const visualClicks =
+    (
+      process.env.VISUAL_CLICKS ||
+      String(
+        !headless
+      )
+    ).toLowerCase() ===
+    "true";
+
+
+  if (
+    visualClicks
+  ) {
+
+    await installClickVisualizer(
+      context
+    );
+
+
+    console.log(
+      "Click visualisation: enabled"
+    );
+  }
 
 
   // ==========================================================
