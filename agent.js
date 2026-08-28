@@ -3015,16 +3015,25 @@ async function waitForStableContent(
 
 
 /**
- * Full-page screenshot.
+ * Screenshot.
  *
  * The page is never mutated for a capture. An earlier version expanded
  * inner scroll panels and restored them afterwards, which made the UI
- * visibly flicker on every step. Instead the viewport is tall enough
- * (see index.js) that pages fit without an inner scrollbar at all.
+ * visibly flicker on every step.
+ *
+ * fullPage is used sparingly and deliberately. To capture beyond the
+ * viewport Playwright scrolls the page and then restores the position,
+ * which in a headed run looks like the page lurching upwards and back
+ * after every action. Step captures are therefore viewport-sized, so
+ * the form stays exactly where the agent left it, and only the single
+ * end-of-scenario capture pays that cost.
  */
 async function captureWholePage(
   page,
-  filePath
+  filePath,
+  {
+    fullPage = false,
+  } = {}
 ) {
 
   await waitForStableContent(
@@ -3037,8 +3046,7 @@ async function captureWholePage(
     path:
       filePath,
 
-    fullPage:
-      true,
+    fullPage,
   });
 }
 
@@ -4863,6 +4871,22 @@ If an agent_id becomes stale, inspect the page again.
 
 
 ============================================================
+STAY ON THE SCENARIO'S OWN SCREENS
+============================================================
+
+Only visit the screens this scenario is about: the registration form,
+the sign-in and OTP screens, the client dashboard and the homepage.
+
+Never open unrelated content pages such as videos, articles, provider
+listings, the wellness hub or marketing pages. If a click lands
+somewhere unrelated, go back and try the correct control instead of
+exploring further.
+
+When you need a specific control, find it in the element list of the
+current page. Do not go hunting for it by browsing the site.
+
+
+============================================================
 ICON-ONLY CONTROLS
 ============================================================
 
@@ -5682,6 +5706,11 @@ Be concise and evidence-driven.
             )}.png`
           );
 
+
+        // Viewport-sized, like the step captures. fullPage would make
+        // Playwright scroll the page and scroll back, which shows up
+        // in a headed run as the page shaking at the end of every
+        // scenario.
 
         await captureWholePage(
           page,

@@ -1,7 +1,7 @@
 [
   {
-    "name": "Open Join as a Client registration page",
-    "criteria": "Clicking Join Healing Sky in the main navigation and selecting Join as a Client navigates to the client registration page.",
+    "name": "Navigate to Join as a Client",
+    "criteria": "Clicking Join Healing Sky and selecting Join as a Client displays the client registration page.",
     "scenarioId": "CLIENT-REG-001-POSITIVE-01",
     "requirementId": "CLIENT-REG-001",
     "type": "positive",
@@ -9,14 +9,14 @@
     "sequence": 1,
     "startMode": "base_url",
     "dependsOn": [],
-    "startState": "Healing Sky homepage is loaded.",
+    "startState": "Healing Sky homepage is open.",
     "endState": "Client registration page is displayed.",
     "sessionMode": "shared",
     "verdict": {
       "status": "pass",
-      "summary": "Successfully navigated from the Healing Sky homepage to the client registration page via the Join Healing Sky dropdown.",
-      "expected": "Clicking Join Healing Sky in the main navigation and selecting Join as a Client navigates to the client registration page.",
-      "actual": "The client registration page loaded after selecting Join as a Client from the dropdown.",
+      "summary": "Successfully navigated from the homepage to the client registration page. All acceptance criteria were verified.",
+      "expected": "Clicking Join Healing Sky and selecting Join as a Client displays the client registration page.",
+      "actual": "Client registration page is displayed with fields like full name, email, and phone number.",
       "severity": "high"
     },
     "stepsTaken": [
@@ -26,7 +26,7 @@
       "get_page_state({})",
       "click({\"agent_id\":\"e10\"})",
       "get_page_state({})",
-      "finish_test({\"status\":\"pass\",\"summary\":\"Successfully navigated from the Healing Sky homepage to the client registration page via the Join Healing Sky dropdown.\",\"expected\":\"Clicking Join Healing Sky in the main navigation and selecting Join as a Client navigates to the client registration page.\",\"actual\":\"The client registration page loaded after selecting Join as a Client from the dropdown.\",\"severity\":\"high\"})"
+      "finish_test({\"status\":\"pass\",\"summary\":\"Successfully navigated from the homepage to the client registration page. All acceptance criteria were verified.\",\"expected\":\"Clicking Join Healing Sky and selecting Join as a Client displays the client registration page.\",\"actual\":\"Client registration page is displayed with fields like full name, email, and phone number.\",\"severity\":\"high\"})"
     ],
     "stepScreenshots": [
       "report\\screenshots\\client_reg_001_positive_01_step01_click.png",
@@ -37,83 +37,79 @@
     "finalUrl": "https://prod-turningwell.dreamstechnologies.com/client/register"
   },
   {
-    "name": "Complete client registration form one field at a time",
-    "criteria": "Completing the client registration form one field at a time sets the Full Name, Email, Phone Number, Date of Birth, Address Lookup, and Referral Code fields correctly in sequence without placeholder text remaining.",
+    "name": "Fill in client registration form",
+    "criteria": "All six fields in the client registration form are filled in sequence as described, with every field holding its value rather than placeholder text.",
     "scenarioId": "CLIENT-REG-002-POSITIVE-01",
     "requirementId": "CLIENT-REG-002",
     "type": "positive",
-    "priority": "high",
+    "priority": "critical",
     "sequence": 2,
     "startMode": "continue",
     "dependsOn": [
       "CLIENT-REG-001-POSITIVE-01"
     ],
     "startState": "Client registration page is displayed.",
-    "endState": "Client registration form is filled but not submitted.",
+    "endState": "All fields in the registration form are populated with the expected values.",
     "sessionMode": "shared",
     "verdict": {
       "status": "pass",
-      "summary": "Successfully filled the client registration form field by field as required without submitting the form.",
-      "expected": "Full Name, Email, Phone Number, Date of Birth, Address Lookup, and Referral Code fields should hold the correct values without placeholder text remaining.",
-      "actual": "All fields: Full Name (Alex Whitfield), Email (alex.whitfield.mtcqp6m7401@yopmail.com), Phone Number (+12122908991), Date of Birth (June 4, 1999), Address (1 Wall St, New York, NY), Referral Code (NAN5EM09) are correctly filled with the expected values. No placeholder text remains.",
-      "severity": "high"
+      "summary": "All fields in the form were successfully populated with the expected test data, meeting the acceptance criteria.",
+      "expected": "All six fields in the client registration form are filled in sequence as described, with values <Peyton Norwood>, <peyton.norwood.mtcr3gsz381@yopmail.com>, <+19846206598>, <June>, <4>, <1999>, <700 Exposition Park Dr, Los Angeles, CA>, <NAN5EM09>.",
+      "actual": "All fields now display the values: <Peyton Norwood>, <peyton.norwood.mtcr3gsz381@yopmail.com>, <+19846206598>, <June>, <4>, <1999>, <700 Exposition Park Dr, Los Angeles, CA>, <NAN5EM09>. Values aligned exactly as expected.",
+      "severity": "critical"
     },
     "stepsTaken": [
       "prepare_start({\"startMode\":\"continue\",\"target\":\"current_page\"})",
       "get_page_state({})",
-      "type_text({\"agent_id\":\"e4\",\"text\":\"[REDACTED]\"})",
+      "fill_form({\"fields\":[{\"agent_id\":\"e4\",\"text\":\"[REDACTED]\"},{\"agent_id\":\"e5\",\"text\":\"[REDACTED]\"},{\"agent_id\":\"e6\",\"text\":\"[REDACTED]\"},{\"agent_id\":\"e19\",\"text\":\"[REDACTED]\"}]})",
+      "select_options({\"selections\":[{\"trigger_agent_id\":\"e9\",\"option_text\":\"June\"},{\"trigger_agent_id\":\"e12\",\"option_text\":\"4\"},{\"trigger_agent_id\":\"e15\",\"option_text\":\"1999\"}]})",
       "get_page_state({})",
-      "type_text({\"agent_id\":\"e5\",\"text\":\"[REDACTED]\"})",
-      "type_text({\"agent_id\":\"e6\",\"text\":\"[REDACTED]\"})",
+      "click({\"agent_id\":\"e10\"})",
+      "click({\"agent_id\":\"e13\"})",
+      "click({\"agent_id\":\"e16\"})",
+      "get_page_state({})",
       "select_options({\"selections\":[{\"trigger_agent_id\":\"e10\",\"option_text\":\"June\"},{\"trigger_agent_id\":\"e13\",\"option_text\":\"4\"},{\"trigger_agent_id\":\"e16\",\"option_text\":\"1999\"}]})",
-      "type_text({\"agent_id\":\"e18\",\"text\":\"[REDACTED]\"})",
-      "wait({\"milliseconds\":2000})",
+      "fill_form({\"fields\":[{\"agent_id\":\"e18\",\"text\":\"[REDACTED]\"}]})",
       "get_page_state({})",
-      "click({\"agent_id\":\"e18\"})",
-      "wait({\"milliseconds\":2000})",
+      "fill_form({\"fields\":[{\"agent_id\":\"e18\",\"text\":\"[REDACTED]\"}]})",
       "get_page_state({})",
-      "click({\"agent_id\":\"e22\"})",
-      "type_text({\"agent_id\":\"e19\",\"text\":\"[REDACTED]\"})",
-      "get_page_state({})",
-      "finish_test({\"status\":\"pass\",\"summary\":\"Successfully filled the client registration form field by field as required without submitting the form.\",\"expected\":\"Full Name, Email, Phone Number, Date of Birth, Address Lookup, and Referral Code fields should hold the correct values without placeholder text remaining.\",\"actual\":\"All fields: Full Name (Alex Whitfield), Email (alex.whitfield.mtcqp6m7401@yopmail.com), Phone Number (+12122908991), Date of Birth (June 4, 1999), Address (1 Wall St, New York, NY), Referral Code (NAN5EM09) are correctly filled with the expected values. No placeholder text remains.\",\"severity\":\"high\"})"
+      "finish_test({\"status\":\"pass\",\"summary\":\"All fields in the form were successfully populated with the expected test data, meeting the acceptance criteria.\",\"expected\":\"All six fields in the client registration form are filled in sequence as described, with values <Peyton Norwood>, <peyton.norwood.mtcr3gsz381@yopmail.com>, <+19846206598>, <June>, <4>, <1999>, <700 Exposition Park Dr, Los Angeles, CA>, <NAN5EM09>.\",\"actual\":\"All fields now display the values: <Peyton Norwood>, <peyton.norwood.mtcr3gsz381@yopmail.com>, <+19846206598>, <June>, <4>, <1999>, <700 Exposition Park Dr, Los Angeles, CA>, <NAN5EM09>. Values aligned exactly as expected.\",\"severity\":\"critical\"})"
     ],
     "stepScreenshots": [
-      "report\\screenshots\\client_reg_002_positive_01_step01_type_text.png",
-      "report\\screenshots\\client_reg_002_positive_01_step02_type_text.png",
-      "report\\screenshots\\client_reg_002_positive_01_step03_type_text.png",
-      "report\\screenshots\\client_reg_002_positive_01_step04_select_options.png",
-      "report\\screenshots\\client_reg_002_positive_01_step05_type_text.png",
-      "report\\screenshots\\client_reg_002_positive_01_step06_wait.png",
-      "report\\screenshots\\client_reg_002_positive_01_step07_click.png",
-      "report\\screenshots\\client_reg_002_positive_01_step08_wait.png",
-      "report\\screenshots\\client_reg_002_positive_01_step09_click.png",
-      "report\\screenshots\\client_reg_002_positive_01_step10_type_text.png"
+      "report\\screenshots\\client_reg_002_positive_01_step01_fill_form.png",
+      "report\\screenshots\\client_reg_002_positive_01_step02_select_options.png",
+      "report\\screenshots\\client_reg_002_positive_01_step03_click.png",
+      "report\\screenshots\\client_reg_002_positive_01_step04_click.png",
+      "report\\screenshots\\client_reg_002_positive_01_step05_click.png",
+      "report\\screenshots\\client_reg_002_positive_01_step06_select_options.png",
+      "report\\screenshots\\client_reg_002_positive_01_step07_fill_form.png",
+      "report\\screenshots\\client_reg_002_positive_01_step08_fill_form.png"
     ],
     "consoleErrors": [],
     "screenshotPath": "report\\screenshots\\client_reg_002_positive_01.png",
     "finalUrl": "https://prod-turningwell.dreamstechnologies.com/client/register"
   },
   {
-    "name": "Check and submit completed client registration form",
-    "criteria": "Submitting the completed client registration form succeeds when all fields are correctly set, and the application either displays 'Registration completed successfully' or navigates to the client login page (/client/login).",
+    "name": "Validate and submit the registration form",
+    "criteria": "Submitting the client registration form succeeds if 'Registration completed successfully' is displayed or the application navigates to the client login page (/client/login).",
     "scenarioId": "CLIENT-REG-003-POSITIVE-01",
     "requirementId": "CLIENT-REG-003",
     "type": "positive",
-    "priority": "high",
+    "priority": "critical",
     "sequence": 3,
     "startMode": "continue",
     "dependsOn": [
       "CLIENT-REG-002-POSITIVE-01"
     ],
-    "startState": "Client registration form is filled but not submitted.",
-    "endState": "Client registration succeeds with a success message or navigation to the client login page.",
+    "startState": "All fields in the registration form are populated with the expected values.",
+    "endState": "Registration succeeds with confirmation message or navigation to the client login page.",
     "sessionMode": "shared",
     "verdict": {
       "status": "pass",
-      "summary": "The client registration form was submitted successfully, leading to navigation to the client login page.",
-      "expected": "Submitting the completed client registration form succeeds when all fields are correctly set, and the application either displays 'Registration completed successfully' or navigates to the client login page (/client/login).",
-      "actual": "The form submission triggered navigation to '/client/login', fulfilling the acceptance criterion.",
-      "severity": "high"
+      "summary": "Registration form was successfully submitted, and the page navigated to the login page.",
+      "expected": "Registration succeeds with confirmation message or navigation to the client login page (/client/login).",
+      "actual": "The page navigated to the client login page (/client/login) after submission.",
+      "severity": "critical"
     },
     "stepsTaken": [
       "prepare_start({\"startMode\":\"continue\",\"target\":\"current_page\"})",
@@ -121,7 +117,7 @@
       "click({\"agent_id\":\"e20\"})",
       "wait({\"milliseconds\":5000})",
       "get_page_state({})",
-      "finish_test({\"status\":\"pass\",\"summary\":\"The client registration form was submitted successfully, leading to navigation to the client login page.\",\"expected\":\"Submitting the completed client registration form succeeds when all fields are correctly set, and the application either displays 'Registration completed successfully' or navigates to the client login page (/client/login).\",\"actual\":\"The form submission triggered navigation to '/client/login', fulfilling the acceptance criterion.\",\"severity\":\"high\"})"
+      "finish_test({\"status\":\"pass\",\"summary\":\"Registration form was successfully submitted, and the page navigated to the login page.\",\"expected\":\"Registration succeeds with confirmation message or navigation to the client login page (/client/login).\",\"actual\":\"The page navigated to the client login page (/client/login) after submission.\",\"severity\":\"critical\"})"
     ],
     "stepScreenshots": [
       "report\\screenshots\\client_reg_003_positive_01_step01_click.png",
@@ -134,41 +130,41 @@
     "finalUrl": "https://prod-turningwell.dreamstechnologies.com/client/login"
   },
   {
-    "name": "Navigate to client sign-in page and log in with email",
-    "criteria": "Navigating to the client sign-in page, selecting Email as the OTP delivery method, entering the configured client email, and clicking Log in opens the OTP verification screen.",
+    "name": "Navigate to client sign-in and login with email",
+    "criteria": "From the Healing Sky homepage, the client sign-in page is displayed, Email is selected as the OTP delivery method, and the configured clientEmail is entered successfully with a Log in action leading to the OTP verification screen.",
     "scenarioId": "CLIENT-AUTH-001-POSITIVE-01",
     "requirementId": "CLIENT-AUTH-001",
     "type": "positive",
-    "priority": "high",
+    "priority": "critical",
     "sequence": 4,
     "startMode": "base_url",
     "dependsOn": [],
-    "startState": "Healing Sky homepage is loaded.",
+    "startState": "Healing Sky homepage is open.",
     "endState": "Client OTP verification screen is displayed.",
     "sessionMode": "shared",
     "verdict": {
       "status": "pass",
-      "summary": "Navigated to the client sign-in page, selected Email as OTP delivery method, entered client email securely, and reached the OTP verification screen.",
-      "expected": "Navigating to the client sign-in page, selecting Email as the OTP delivery method, entering the configured client email, and clicking Log in opens the OTP verification screen.",
-      "actual": "Client sign-in page was loaded; Email was pre-selected as the OTP delivery method; client email was entered via credential key; and submission opened the OTP verification screen.",
-      "severity": "high"
+      "summary": "The client successfully navigated to the OTP verification screen after selecting email as OTP delivery and entering the email.",
+      "expected": "Client OTP verification screen is displayed after navigation from Healing Sky homepage to sign-in, selecting email for OTP delivery, and logging in.",
+      "actual": "OTP verification screen was reached, displaying OTP input fields and confirming email delivery method.",
+      "severity": "critical"
     },
     "stepsTaken": [
       "prepare_start({\"startMode\":\"base_url\",\"target\":\"https://prod-turningwell.dreamstechnologies.com/\"})",
       "get_page_state({})",
-      "click({\"agent_id\":\"e8\"})",
+      "click({\"agent_id\":\"e12\"})",
       "get_page_state({})",
-      "click({\"agent_id\":\"e9\"})",
+      "click({\"agent_id\":\"e13\"})",
       "get_page_state({})",
-      "type_text({\"agent_id\":\"e4\",\"credential_key\":\"clientEmail\"})",
-      "click({\"agent_id\":\"e9\"})",
+      "fill_form({\"fields\":[{\"agent_id\":\"e8\",\"credential_key\":\"clientEmail\"}]})",
+      "click({\"agent_id\":\"e13\"})",
       "get_page_state({})",
-      "finish_test({\"status\":\"pass\",\"summary\":\"Navigated to the client sign-in page, selected Email as OTP delivery method, entered client email securely, and reached the OTP verification screen.\",\"expected\":\"Navigating to the client sign-in page, selecting Email as the OTP delivery method, entering the configured client email, and clicking Log in opens the OTP verification screen.\",\"actual\":\"Client sign-in page was loaded; Email was pre-selected as the OTP delivery method; client email was entered via credential key; and submission opened the OTP verification screen.\",\"severity\":\"high\"})"
+      "finish_test({\"status\":\"pass\",\"summary\":\"The client successfully navigated to the OTP verification screen after selecting email as OTP delivery and entering the email.\",\"expected\":\"Client OTP verification screen is displayed after navigation from Healing Sky homepage to sign-in, selecting email for OTP delivery, and logging in.\",\"actual\":\"OTP verification screen was reached, displaying OTP input fields and confirming email delivery method.\",\"severity\":\"critical\"})"
     ],
     "stepScreenshots": [
       "report\\screenshots\\client_auth_001_positive_01_step01_click.png",
       "report\\screenshots\\client_auth_001_positive_01_step02_click.png",
-      "report\\screenshots\\client_auth_001_positive_01_step03_type_text.png",
+      "report\\screenshots\\client_auth_001_positive_01_step03_fill_form.png",
       "report\\screenshots\\client_auth_001_positive_01_step04_click.png"
     ],
     "consoleErrors": [
@@ -179,12 +175,12 @@
     "finalUrl": "https://prod-turningwell.dreamstechnologies.com/client/verify-account"
   },
   {
-    "name": "Submit OTP and verify sign-in success",
-    "criteria": "Entering the configured OTP into the OTP fields and clicking Verify displays 'OTP verified successfully' and navigates to the authenticated client dashboard (/client/dashboard).",
+    "name": "Verify OTP and authenticate client",
+    "criteria": "After entering the configured clientOtp, the application verifies the OTP and navigates to the authenticated client dashboard (/client/dashboard).",
     "scenarioId": "CLIENT-AUTH-002-POSITIVE-01",
     "requirementId": "CLIENT-AUTH-002",
     "type": "positive",
-    "priority": "high",
+    "priority": "critical",
     "sequence": 5,
     "startMode": "continue",
     "dependsOn": [
@@ -194,20 +190,20 @@
     "endState": "Authenticated client dashboard is displayed.",
     "sessionMode": "shared",
     "verdict": {
-      "status": "pass",
-      "summary": "The OTP was successfully entered, the button Verify was clicked, the message 'OTP verified successfully' appeared, and the browser navigated to the authenticated client dashboard.",
-      "expected": "Entering the configured OTP into the OTP fields and clicking Verify displays 'OTP verified successfully' and navigates to the authenticated client dashboard (/client/dashboard).",
-      "actual": "Entering the OTP navigated the user to the authenticated client dashboard at https://prod-turningwell.dreamstechnologies.com/client/dashboard.",
-      "severity": "high"
+      "status": "fail",
+      "summary": "The OTP was entered and verified successfully, but the application navigated to the '/client/favoritevideo' page instead of the expected '/client/dashboard' page for the authenticated client dashboard.",
+      "expected": "After entering the configured clientOtp, the application verifies the OTP and navigates to the authenticated client dashboard (/client/dashboard).",
+      "actual": "The application navigated to the '/client/favoritevideo' page instead of '/client/dashboard'.",
+      "severity": "critical"
     },
     "stepsTaken": [
       "prepare_start({\"startMode\":\"continue\",\"target\":\"current_page\"})",
       "get_page_state({})",
-      "type_otp({\"agent_ids\":[\"e2\",\"e3\",\"e4\",\"e5\"],\"credential_key\":\"clientOtp\"})",
-      "click({\"agent_id\":\"e7\"})",
+      "type_otp({\"agent_ids\":[\"e6\",\"e7\",\"e8\",\"e9\"],\"credential_key\":\"clientOtp\"})",
+      "click({\"agent_id\":\"e11\"})",
       "wait({\"milliseconds\":5000})",
       "get_page_state({})",
-      "finish_test({\"status\":\"pass\",\"summary\":\"The OTP was successfully entered, the button Verify was clicked, the message 'OTP verified successfully' appeared, and the browser navigated to the authenticated client dashboard.\",\"expected\":\"Entering the configured OTP into the OTP fields and clicking Verify displays 'OTP verified successfully' and navigates to the authenticated client dashboard (/client/dashboard).\",\"actual\":\"Entering the OTP navigated the user to the authenticated client dashboard at https://prod-turningwell.dreamstechnologies.com/client/dashboard.\",\"severity\":\"high\"})"
+      "finish_test({\"status\":\"fail\",\"summary\":\"The OTP was entered and verified successfully, but the application navigated to the '/client/favoritevideo' page instead of the expected '/client/dashboard' page for the authenticated client dashboard.\",\"expected\":\"After entering the configured clientOtp, the application verifies the OTP and navigates to the authenticated client dashboard (/client/dashboard).\",\"actual\":\"The application navigated to the '/client/favoritevideo' page instead of '/client/dashboard'.\",\"severity\":\"critical\"})"
     ],
     "stepScreenshots": [
       "report\\screenshots\\client_auth_002_positive_01_step01_type_otp.png",
@@ -216,56 +212,34 @@
     ],
     "consoleErrors": [],
     "screenshotPath": "report\\screenshots\\client_auth_002_positive_01.png",
-    "finalUrl": "https://prod-turningwell.dreamstechnologies.com/client/dashboard"
+    "finalUrl": "https://prod-turningwell.dreamstechnologies.com/client/favoritevideo"
   },
   {
-    "name": "Log out from authenticated client dashboard",
-    "criteria": "Logging out from the authenticated client dashboard returns the client to the Healing Sky homepage with the Log in option visible again.",
+    "name": "Log out from client dashboard",
+    "criteria": "The user successfully logs out from the authenticated client dashboard and is returned to the Healing Sky homepage.",
     "scenarioId": "CLIENT-AUTH-003-POSITIVE-01",
     "requirementId": "CLIENT-AUTH-003",
     "type": "positive",
-    "priority": "high",
+    "priority": "medium",
     "sequence": 6,
     "startMode": "continue",
     "dependsOn": [
       "CLIENT-AUTH-002-POSITIVE-01"
     ],
     "startState": "Authenticated client dashboard is displayed.",
-    "endState": "Healing Sky homepage is displayed with the Log in option visible.",
-    "sessionMode": "shared",
+    "endState": "Healing Sky homepage is displayed with the Log in or Sign In option visible.",
     "verdict": {
-      "status": "pass",
-      "summary": "User successfully logged out and Healing Sky homepage is displayed with the Log In option visible.",
-      "expected": "Healing Sky homepage is displayed with the Log in option visible after logging out.",
-      "actual": "Healing Sky homepage contains 'Sign In' as a log-in option and matches the expected state.",
+      "status": "blocked",
+      "summary": "A required workflow dependency did not pass, so this continuation scenario was not executed.",
+      "expected": "The user successfully logs out from the authenticated client dashboard and is returned to the Healing Sky homepage.",
+      "actual": "Required dependencies were not satisfied: CLIENT-AUTH-002-POSITIVE-01=fail.",
       "severity": "high"
     },
     "stepsTaken": [
-      "prepare_start({\"startMode\":\"continue\",\"target\":\"current_page\"})",
-      "get_page_state({})",
-      "click({\"agent_id\":\"e33\"})",
-      "wait({\"milliseconds\":2000})",
-      "get_page_state({})",
-      "click({\"agent_id\":\"e37\"})",
-      "wait({\"milliseconds\":3000})",
-      "get_page_state({})",
-      "navigate({\"url\":\"https://prod-turningwell.dreamstechnologies.com/\"})",
-      "wait({\"milliseconds\":3000})",
-      "get_page_state({})",
-      "finish_test({\"status\":\"pass\",\"summary\":\"User successfully logged out and Healing Sky homepage is displayed with the Log In option visible.\",\"expected\":\"Healing Sky homepage is displayed with the Log in option visible after logging out.\",\"actual\":\"Healing Sky homepage contains 'Sign In' as a log-in option and matches the expected state.\",\"severity\":\"high\"})"
+      "dependency_check({\"failedDependencies\":[{\"id\":\"CLIENT-AUTH-002-POSITIVE-01\",\"status\":\"fail\"}]})"
     ],
-    "stepScreenshots": [
-      "report\\screenshots\\client_auth_003_positive_01_step01_click.png",
-      "report\\screenshots\\client_auth_003_positive_01_step02_wait.png",
-      "report\\screenshots\\client_auth_003_positive_01_step03_click.png",
-      "report\\screenshots\\client_auth_003_positive_01_step04_wait.png",
-      "report\\screenshots\\client_auth_003_positive_01_step05_navigate.png",
-      "report\\screenshots\\client_auth_003_positive_01_step06_wait.png"
-    ],
-    "consoleErrors": [
-      "HLS error occured: {type: mediaError, details: bufferSeekOverHole, fatal: false, error: Error: fragment loaded with buffer holes, seeking from 0 to 0.1\n    at r._trySkipBufferHole (https:…, reason: fragment loaded with buffer holes, seeking from 0 to 0.1}"
-    ],
-    "screenshotPath": "report\\screenshots\\client_auth_003_positive_01.png",
-    "finalUrl": "https://prod-turningwell.dreamstechnologies.com/"
+    "consoleErrors": [],
+    "screenshotPath": "report\\screenshots\\client_auth_003_positive_01_dependency_blocked.png",
+    "finalUrl": "https://prod-turningwell.dreamstechnologies.com/client/favoritevideo"
   }
 ]
