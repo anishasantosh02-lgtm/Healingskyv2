@@ -4,37 +4,49 @@
 
 **Runner version:** startMode-dependency-credentials-v3
 
-**Run at:** 2026-08-28T09:34:24.144Z
+**Run at:** 2026-08-28T12:23:44.734Z
 
-**Scenarios:** 6
+**Scenarios:** 8
 
-**Summary:** 4 passed, 1 failed, 1 blocked
+**Summary:** 8 passed, 0 failed, 0 blocked
 
 ### Dynamic test data
 
 | Field | Value |
 | --- | --- |
-| fullName | Peyton Norwood |
-| email | peyton.norwood.mtcr3gsz381@yopmail.com |
+| fullName | Sawyer Griffin |
+| email | sawyer.griffin.mtcx2ugx228@yopmail.com |
 | phoneCountryCode | +1 |
 | phoneCountryLabel | United States (+1) |
-| phoneNumber | 9846206598 |
-| phoneE164 | +19846206598 |
+| phoneNumber | 9846788676 |
+| phoneE164 | +19846788676 |
 | dobMonth | June |
 | dobDate | 4 |
-| dobYear | 1999 |
-| addressLookup | 700 Exposition Park Dr, Los Angeles, CA |
+| dobYear | 1976 |
+| addressLookup | 233 S Wacker Dr, Chicago, IL |
 | referralCode | NAN5EM09 |
+| npiNumber | 5503036196 |
+| licenseNumber | 8934893 |
+| licenseState | California |
+| licenseExpiryMonth | 11 |
+| licenseExpiryYear | 2030 |
+| licenseExpiry | 11/2030 |
+| providerCategory | Psychiatry |
+| providerClassification | Individual Provider |
+| providerSubCategory | Psychiatrists |
+| cardNumber | 4242 4242 4242 4242 |
+| cardExpiry | 11/29 |
+| cardCvv | 442 |
 
 ---
 
-## ✅ Navigate to Join as a Client
+## ✅ Open Provider Registration Wizard
 
-**Scenario ID:** CLIENT-REG-001-POSITIVE-01
+**Scenario ID:** PROVIDER-REG-001-POSITIVE-01
 
-**Requirement:** CLIENT-REG-001
+**Requirement:** PROVIDER-REG-001
 
-**Test type:** positive
+**Test type:** navigation
 
 **Priority:** high
 
@@ -44,353 +56,503 @@
 
 **Depends on:** None
 
-**Expected start state:** Healing Sky homepage is open.
+**Expected start state:** Healing Sky homepage is loaded.
 
-**Expected end state:** Client registration page is displayed.
+**Expected end state:** Provider registration wizard opens at /provider/register.
 
-**Criteria:** Clicking Join Healing Sky and selecting Join as a Client displays the client registration page.
+**Criteria:** The Join Healing Sky option opens the provider registration wizard at /provider/register displaying fields for Full Name, Email, Phone, Date of Birth, and Referral Code.
 
 **Status:** PASS
 
 **Severity:** high
 
-**Summary:** Successfully navigated from the homepage to the client registration page. All acceptance criteria were verified.
+**Summary:** Successfully verified the navigation to the provider registration wizard.
 
-**Expected:** Clicking Join Healing Sky and selecting Join as a Client displays the client registration page.
+**Expected:** Provider registration wizard opens at /provider/register displaying fields for Full Name, Email, Phone, Date of Birth, and Referral Code.
 
-**Actual:** Client registration page is displayed with fields like full name, email, and phone number.
+**Actual:** The provider registration wizard successfully opened at /provider/register, displaying the required fields.
 
-**Final URL:** https://prod-turningwell.dreamstechnologies.com/client/register
+**Final URL:** https://prod-turningwell.dreamstechnologies.com/provider/register
 
 **Final state (full page):**
 
-![CLIENT-REG-001-POSITIVE-01](screenshots/client_reg_001_positive_01.png)
+![PROVIDER-REG-001-POSITIVE-01](screenshots/provider_reg_001_positive_01.png)
 
-**Steps taken (7):**
+**Steps taken (9):**
 
 - prepare_start({"startMode":"base_url","target":"https://prod-turningwell.dreamstechnologies.com/"})
 - get_page_state({})
 - click({"agent_id":"e9"})
+- wait({"milliseconds":2000})
 - get_page_state({})
-- click({"agent_id":"e10"})
+- click({"agent_id":"e11"})
+- wait({"milliseconds":3000})
 - get_page_state({})
-- finish_test({"status":"pass","summary":"Successfully navigated from the homepage to the client registration page. All acceptance criteria were verified.","expected":"Clicking Join Healing Sky and selecting Join as a Client displays the client registration page.","actual":"Client registration page is displayed with fields like full name, email, and phone number.","severity":"high"})
+- finish_test({"status":"pass","summary":"Successfully verified the navigation to the provider registration wizard.","expected":"Provider registration wizard opens at /provider/register displaying fields for Full Name, Email, Phone, Date of Birth, and Referral Code.","actual":"The provider registration wizard successfully opened at /provider/register, displaying the required fields.","severity":"high"})
 
-**Step screenshots (2):**
+**Step screenshots (4):**
 
-![client_reg_001_positive_01_step01_click](screenshots/client_reg_001_positive_01_step01_click.png)
+![provider_reg_001_positive_01_step01_click](screenshots/provider_reg_001_positive_01_step01_click.png)
 
-![client_reg_001_positive_01_step02_click](screenshots/client_reg_001_positive_01_step02_click.png)
+![provider_reg_001_positive_01_step02_wait](screenshots/provider_reg_001_positive_01_step02_wait.png)
+
+![provider_reg_001_positive_01_step03_click](screenshots/provider_reg_001_positive_01_step03_click.png)
+
+![provider_reg_001_positive_01_step04_wait](screenshots/provider_reg_001_positive_01_step04_wait.png)
 
 
 ---
 
-## ✅ Fill in client registration form
+## ✅ Fill provider personal details form (step 1)
 
-**Scenario ID:** CLIENT-REG-002-POSITIVE-01
+**Scenario ID:** PROVIDER-REG-002-POSITIVE-01
 
-**Requirement:** CLIENT-REG-002
+**Requirement:** PROVIDER-REG-002
 
 **Test type:** positive
 
-**Priority:** critical
+**Priority:** high
 
 **Sequence:** 2
 
 **Start mode:** continue
 
-**Depends on:** CLIENT-REG-001-POSITIVE-01
+**Depends on:** PROVIDER-REG-001-POSITIVE-01
 
-**Expected start state:** Client registration page is displayed.
+**Expected start state:** Provider registration wizard is open at /provider/register.
 
-**Expected end state:** All fields in the registration form are populated with the expected values.
+**Expected end state:** Provider registration wizard advances to /provider/address.
 
-**Criteria:** All six fields in the client registration form are filled in sequence as described, with every field holding its value rather than placeholder text.
+**Criteria:** Filling all fields in provider registration step 1 correctly and clicking 'Proceed' advances the user to the address step at /provider/address.
 
 **Status:** PASS
 
-**Severity:** critical
+**Severity:** high
 
-**Summary:** All fields in the form were successfully populated with the expected test data, meeting the acceptance criteria.
+**Summary:** All fields were correctly filled, and the 'Proceed' button successfully advanced to /provider/address.
 
-**Expected:** All six fields in the client registration form are filled in sequence as described, with values <Peyton Norwood>, <peyton.norwood.mtcr3gsz381@yopmail.com>, <+19846206598>, <June>, <4>, <1999>, <700 Exposition Park Dr, Los Angeles, CA>, <NAN5EM09>.
+**Expected:** Filling all fields correctly and clicking 'Proceed' advances to /provider/address.
 
-**Actual:** All fields now display the values: <Peyton Norwood>, <peyton.norwood.mtcr3gsz381@yopmail.com>, <+19846206598>, <June>, <4>, <1999>, <700 Exposition Park Dr, Los Angeles, CA>, <NAN5EM09>. Values aligned exactly as expected.
+**Actual:** Form was filled with test data, and clicking 'Proceed' redirected to /provider/address.
 
-**Final URL:** https://prod-turningwell.dreamstechnologies.com/client/register
+**Final URL:** https://prod-turningwell.dreamstechnologies.com/provider/address
 
 **Final state (full page):**
 
-![CLIENT-REG-002-POSITIVE-01](screenshots/client_reg_002_positive_01.png)
+![PROVIDER-REG-002-POSITIVE-01](screenshots/provider_reg_002_positive_01.png)
 
-**Steps taken (15):**
+**Steps taken (9):**
 
 - prepare_start({"startMode":"continue","target":"current_page"})
 - get_page_state({})
-- fill_form({"fields":[{"agent_id":"e4","text":"[REDACTED]"},{"agent_id":"e5","text":"[REDACTED]"},{"agent_id":"e6","text":"[REDACTED]"},{"agent_id":"e19","text":"[REDACTED]"}]})
-- select_options({"selections":[{"trigger_agent_id":"e9","option_text":"June"},{"trigger_agent_id":"e12","option_text":"4"},{"trigger_agent_id":"e15","option_text":"1999"}]})
+- fill_form({"fields":[{"agent_id":"e4","text":"[REDACTED]"},{"agent_id":"e5","text":"[REDACTED]"},{"agent_id":"e6","text":"[REDACTED]"},{"agent_id":"e17","text":"[REDACTED]"}]})
+- select_options({"selections":[{"trigger_agent_id":"e10","option_text":"June"},{"trigger_agent_id":"e13","option_text":"4"},{"trigger_agent_id":"e16","option_text":"1976"}]})
 - get_page_state({})
-- click({"agent_id":"e10"})
-- click({"agent_id":"e13"})
-- click({"agent_id":"e16"})
+- click({"agent_id":"e18"})
+- wait({"milliseconds":5000})
 - get_page_state({})
-- select_options({"selections":[{"trigger_agent_id":"e10","option_text":"June"},{"trigger_agent_id":"e13","option_text":"4"},{"trigger_agent_id":"e16","option_text":"1999"}]})
-- fill_form({"fields":[{"agent_id":"e18","text":"[REDACTED]"}]})
-- get_page_state({})
-- fill_form({"fields":[{"agent_id":"e18","text":"[REDACTED]"}]})
-- get_page_state({})
-- finish_test({"status":"pass","summary":"All fields in the form were successfully populated with the expected test data, meeting the acceptance criteria.","expected":"All six fields in the client registration form are filled in sequence as described, with values <Peyton Norwood>, <peyton.norwood.mtcr3gsz381@yopmail.com>, <+19846206598>, <June>, <4>, <1999>, <700 Exposition Park Dr, Los Angeles, CA>, <NAN5EM09>.","actual":"All fields now display the values: <Peyton Norwood>, <peyton.norwood.mtcr3gsz381@yopmail.com>, <+19846206598>, <June>, <4>, <1999>, <700 Exposition Park Dr, Los Angeles, CA>, <NAN5EM09>. Values aligned exactly as expected.","severity":"critical"})
+- finish_test({"status":"pass","summary":"All fields were correctly filled, and the 'Proceed' button successfully advanced to /provider/address.","expected":"Filling all fields correctly and clicking 'Proceed' advances to /provider/address.","actual":"Form was filled with test data, and clicking 'Proceed' redirected to /provider/address.","severity":"high"})
 
-**Step screenshots (8):**
+**Step screenshots (4):**
 
-![client_reg_002_positive_01_step01_fill_form](screenshots/client_reg_002_positive_01_step01_fill_form.png)
+![provider_reg_002_positive_01_step01_fill_form](screenshots/provider_reg_002_positive_01_step01_fill_form.png)
 
-![client_reg_002_positive_01_step02_select_options](screenshots/client_reg_002_positive_01_step02_select_options.png)
+![provider_reg_002_positive_01_step02_select_options](screenshots/provider_reg_002_positive_01_step02_select_options.png)
 
-![client_reg_002_positive_01_step03_click](screenshots/client_reg_002_positive_01_step03_click.png)
+![provider_reg_002_positive_01_step03_click](screenshots/provider_reg_002_positive_01_step03_click.png)
 
-![client_reg_002_positive_01_step04_click](screenshots/client_reg_002_positive_01_step04_click.png)
-
-![client_reg_002_positive_01_step05_click](screenshots/client_reg_002_positive_01_step05_click.png)
-
-![client_reg_002_positive_01_step06_select_options](screenshots/client_reg_002_positive_01_step06_select_options.png)
-
-![client_reg_002_positive_01_step07_fill_form](screenshots/client_reg_002_positive_01_step07_fill_form.png)
-
-![client_reg_002_positive_01_step08_fill_form](screenshots/client_reg_002_positive_01_step08_fill_form.png)
+![provider_reg_002_positive_01_step04_wait](screenshots/provider_reg_002_positive_01_step04_wait.png)
 
 
 ---
 
-## ✅ Validate and submit the registration form
+## ✅ Fill provider address details form (step 2)
 
-**Scenario ID:** CLIENT-REG-003-POSITIVE-01
+**Scenario ID:** PROVIDER-REG-003-POSITIVE-01
 
-**Requirement:** CLIENT-REG-003
+**Requirement:** PROVIDER-REG-003
 
 **Test type:** positive
 
-**Priority:** critical
+**Priority:** high
 
 **Sequence:** 3
 
 **Start mode:** continue
 
-**Depends on:** CLIENT-REG-002-POSITIVE-01
+**Depends on:** PROVIDER-REG-002-POSITIVE-01
 
-**Expected start state:** All fields in the registration form are populated with the expected values.
+**Expected start state:** Provider registration wizard is open at /provider/address.
 
-**Expected end state:** Registration succeeds with confirmation message or navigation to the client login page.
+**Expected end state:** Provider registration wizard advances to /provider/location.
 
-**Criteria:** Submitting the client registration form succeeds if 'Registration completed successfully' is displayed or the application navigates to the client login page (/client/login).
+**Criteria:** Filling the address field, confirming it resolves correctly with Google Places API, and clicking 'Proceed' advances the user to the location step at /provider/location.
 
 **Status:** PASS
 
-**Severity:** critical
+**Severity:** high
 
-**Summary:** Registration form was successfully submitted, and the page navigated to the login page.
+**Summary:** Address details were successfully filled, resolved with Google Places API, and the wizard advanced to the location step.
 
-**Expected:** Registration succeeds with confirmation message or navigation to the client login page (/client/login).
+**Expected:** Provider registration wizard advances to /provider/location after filling and confirming the address field and clicking 'Proceed'.
 
-**Actual:** The page navigated to the client login page (/client/login) after submission.
+**Actual:** User advanced to /provider/location after confirming the address suggestion and clicking 'Proceed'.
 
-**Final URL:** https://prod-turningwell.dreamstechnologies.com/client/login
-
-**Console errors observed:**
-
-- `Failed to load resource: the server responded with a status of 404 ()`
+**Final URL:** https://prod-turningwell.dreamstechnologies.com/provider/location
 
 **Final state (full page):**
 
-![CLIENT-REG-003-POSITIVE-01](screenshots/client_reg_003_positive_01.png)
+![PROVIDER-REG-003-POSITIVE-01](screenshots/provider_reg_003_positive_01.png)
 
-**Steps taken (6):**
+**Steps taken (13):**
 
 - prepare_start({"startMode":"continue","target":"current_page"})
 - get_page_state({})
-- click({"agent_id":"e20"})
+- type_text({"agent_id":"e5","text":"[REDACTED]"})
+- wait({"milliseconds":2000})
+- get_page_state({})
+- click({"agent_id":"e5"})
+- get_page_state({})
+- click({"agent_id":"e17"})
+- get_page_state({})
+- click({"agent_id":"e8"})
 - wait({"milliseconds":5000})
 - get_page_state({})
-- finish_test({"status":"pass","summary":"Registration form was successfully submitted, and the page navigated to the login page.","expected":"Registration succeeds with confirmation message or navigation to the client login page (/client/login).","actual":"The page navigated to the client login page (/client/login) after submission.","severity":"critical"})
+- finish_test({"status":"pass","summary":"Address details were successfully filled, resolved with Google Places API, and the wizard advanced to the location step.","expected":"Provider registration wizard advances to /provider/location after filling and confirming the address field and clicking 'Proceed'.","actual":"User advanced to /provider/location after confirming the address suggestion and clicking 'Proceed'.","severity":"high"})
 
-**Step screenshots (2):**
+**Step screenshots (6):**
 
-![client_reg_003_positive_01_step01_click](screenshots/client_reg_003_positive_01_step01_click.png)
+![provider_reg_003_positive_01_step01_type_text](screenshots/provider_reg_003_positive_01_step01_type_text.png)
 
-![client_reg_003_positive_01_step02_wait](screenshots/client_reg_003_positive_01_step02_wait.png)
+![provider_reg_003_positive_01_step02_wait](screenshots/provider_reg_003_positive_01_step02_wait.png)
+
+![provider_reg_003_positive_01_step03_click](screenshots/provider_reg_003_positive_01_step03_click.png)
+
+![provider_reg_003_positive_01_step04_click](screenshots/provider_reg_003_positive_01_step04_click.png)
+
+![provider_reg_003_positive_01_step05_click](screenshots/provider_reg_003_positive_01_step05_click.png)
+
+![provider_reg_003_positive_01_step06_wait](screenshots/provider_reg_003_positive_01_step06_wait.png)
 
 
 ---
 
-## ✅ Navigate to client sign-in and login with email
+## ✅ Fill provider and listing details form (step 3)
 
-**Scenario ID:** CLIENT-AUTH-001-POSITIVE-01
+**Scenario ID:** PROVIDER-REG-004-POSITIVE-01
 
-**Requirement:** CLIENT-AUTH-001
+**Requirement:** PROVIDER-REG-004
 
 **Test type:** positive
 
-**Priority:** critical
+**Priority:** high
 
 **Sequence:** 4
 
-**Start mode:** base_url
+**Start mode:** continue
 
-**Depends on:** None
+**Depends on:** PROVIDER-REG-003-POSITIVE-01
 
-**Expected start state:** Healing Sky homepage is open.
+**Expected start state:** Provider registration wizard is open at /provider/location.
 
-**Expected end state:** Client OTP verification screen is displayed.
+**Expected end state:** Provider registration wizard advances to /provider/credential.
 
-**Criteria:** From the Healing Sky homepage, the client sign-in page is displayed, Email is selected as the OTP delivery method, and the configured clientEmail is entered successfully with a Log in action leading to the OTP verification screen.
+**Criteria:** Filling all fields in provider registration step 3 correctly and clicking 'Proceed' advances the user to the licence status step at /provider/credential.
 
 **Status:** PASS
 
-**Severity:** critical
+**Severity:** high
 
-**Summary:** The client successfully navigated to the OTP verification screen after selecting email as OTP delivery and entering the email.
+**Summary:** Provider registration wizard correctly advanced from the /provider/location step to the /provider/credential step.
 
-**Expected:** Client OTP verification screen is displayed after navigation from Healing Sky homepage to sign-in, selecting email for OTP delivery, and logging in.
+**Expected:** Filling all fields in provider registration step 3 correctly and clicking 'Proceed' advances the user to the licence status step at /provider/credential.
 
-**Actual:** OTP verification screen was reached, displaying OTP input fields and confirming email delivery method.
+**Actual:** Provider registration wizard advanced to /provider/credential after providing required details.
 
-**Final URL:** https://prod-turningwell.dreamstechnologies.com/client/verify-account
-
-**Console errors observed:**
-
-- `Failed to load resource: the server responded with a status of 404 ()`
-- `Failed to load resource: the server responded with a status of 404 ()`
+**Final URL:** https://prod-turningwell.dreamstechnologies.com/provider/credential
 
 **Final state (full page):**
 
-![CLIENT-AUTH-001-POSITIVE-01](screenshots/client_auth_001_positive_01.png)
+![PROVIDER-REG-004-POSITIVE-01](screenshots/provider_reg_004_positive_01.png)
 
-**Steps taken (10):**
+**Steps taken (13):**
 
-- prepare_start({"startMode":"base_url","target":"https://prod-turningwell.dreamstechnologies.com/"})
+- prepare_start({"startMode":"continue","target":"current_page"})
 - get_page_state({})
-- click({"agent_id":"e12"})
+- select_options({"selections":[{"trigger_agent_id":"e4","option_text":"Psychiatry"}]})
 - get_page_state({})
-- click({"agent_id":"e13"})
+- select_options({"selections":[{"trigger_agent_id":"e7","option_text":"Individual Provider"}]})
 - get_page_state({})
-- fill_form({"fields":[{"agent_id":"e8","credential_key":"clientEmail"}]})
-- click({"agent_id":"e13"})
+- select_options({"selections":[{"trigger_agent_id":"e10","option_text":"Psychiatrists"}]})
+- fill_form({"fields":[{"agent_id":"e13","text":"[REDACTED]"}]})
 - get_page_state({})
-- finish_test({"status":"pass","summary":"The client successfully navigated to the OTP verification screen after selecting email as OTP delivery and entering the email.","expected":"Client OTP verification screen is displayed after navigation from Healing Sky homepage to sign-in, selecting email for OTP delivery, and logging in.","actual":"OTP verification screen was reached, displaying OTP input fields and confirming email delivery method.","severity":"critical"})
+- click({"agent_id":"e17"})
+- wait({"milliseconds":5000})
+- get_page_state({})
+- finish_test({"status":"pass","summary":"Provider registration wizard correctly advanced from the /provider/location step to the /provider/credential step.","expected":"Filling all fields in provider registration step 3 correctly and clicking 'Proceed' advances the user to the licence status step at /provider/credential.","actual":"Provider registration wizard advanced to /provider/credential after providing required details.","severity":"high"})
 
-**Step screenshots (4):**
+**Step screenshots (6):**
 
-![client_auth_001_positive_01_step01_click](screenshots/client_auth_001_positive_01_step01_click.png)
+![provider_reg_004_positive_01_step01_select_options](screenshots/provider_reg_004_positive_01_step01_select_options.png)
 
-![client_auth_001_positive_01_step02_click](screenshots/client_auth_001_positive_01_step02_click.png)
+![provider_reg_004_positive_01_step02_select_options](screenshots/provider_reg_004_positive_01_step02_select_options.png)
 
-![client_auth_001_positive_01_step03_fill_form](screenshots/client_auth_001_positive_01_step03_fill_form.png)
+![provider_reg_004_positive_01_step03_select_options](screenshots/provider_reg_004_positive_01_step03_select_options.png)
 
-![client_auth_001_positive_01_step04_click](screenshots/client_auth_001_positive_01_step04_click.png)
+![provider_reg_004_positive_01_step04_fill_form](screenshots/provider_reg_004_positive_01_step04_fill_form.png)
+
+![provider_reg_004_positive_01_step05_click](screenshots/provider_reg_004_positive_01_step05_click.png)
+
+![provider_reg_004_positive_01_step06_wait](screenshots/provider_reg_004_positive_01_step06_wait.png)
 
 
 ---
 
-## ❌ Verify OTP and authenticate client
+## ✅ Fill provider licence status form (step 4)
 
-**Scenario ID:** CLIENT-AUTH-002-POSITIVE-01
+**Scenario ID:** PROVIDER-REG-005-POSITIVE-01
 
-**Requirement:** CLIENT-AUTH-002
+**Requirement:** PROVIDER-REG-005
 
 **Test type:** positive
 
-**Priority:** critical
+**Priority:** high
 
 **Sequence:** 5
 
 **Start mode:** continue
 
-**Depends on:** CLIENT-AUTH-001-POSITIVE-01
+**Depends on:** PROVIDER-REG-004-POSITIVE-01
 
-**Expected start state:** Client OTP verification screen is displayed.
+**Expected start state:** Provider registration wizard is open at /provider/credential.
 
-**Expected end state:** Authenticated client dashboard is displayed.
+**Expected end state:** Provider registration wizard advances to /provider/credentials.
 
-**Criteria:** After entering the configured clientOtp, the application verifies the OTP and navigates to the authenticated client dashboard (/client/dashboard).
+**Criteria:** Selecting 'I am licensed', verifying selection, and clicking 'Proceed' advances the user to the licence details step at /provider/credentials.
 
-**Status:** FAIL
+**Status:** PASS
 
-**Severity:** critical
+**Severity:** high
 
-**Summary:** The OTP was entered and verified successfully, but the application navigated to the '/client/favoritevideo' page instead of the expected '/client/dashboard' page for the authenticated client dashboard.
+**Summary:** The scenario successfully advanced from selecting 'I am licensed' to the 'license details' step at /provider/credentials.
 
-**Expected:** After entering the configured clientOtp, the application verifies the OTP and navigates to the authenticated client dashboard (/client/dashboard).
+**Expected:** Provider registration wizard advances to /provider/credentials after selecting 'I am licensed' and clicking 'Proceed'.
 
-**Actual:** The application navigated to the '/client/favoritevideo' page instead of '/client/dashboard'.
+**Actual:** Provider registration wizard showed the 'license details' step at /provider/credentials after selecting 'I am licensed' and clicking 'Proceed'.
 
-**Final URL:** https://prod-turningwell.dreamstechnologies.com/client/favoritevideo
+**Final URL:** https://prod-turningwell.dreamstechnologies.com/provider/credentials
 
 **Final state (full page):**
 
-![CLIENT-AUTH-002-POSITIVE-01](screenshots/client_auth_002_positive_01.png)
+![PROVIDER-REG-005-POSITIVE-01](screenshots/provider_reg_005_positive_01.png)
 
-**Steps taken (7):**
+**Steps taken (9):**
 
 - prepare_start({"startMode":"continue","target":"current_page"})
 - get_page_state({})
-- type_otp({"agent_ids":["e6","e7","e8","e9"],"credential_key":"clientOtp"})
-- click({"agent_id":"e11"})
+- click({"agent_id":"e4"})
+- wait({"milliseconds":2000})
+- get_page_state({})
+- click({"agent_id":"e12"})
 - wait({"milliseconds":5000})
 - get_page_state({})
-- finish_test({"status":"fail","summary":"The OTP was entered and verified successfully, but the application navigated to the '/client/favoritevideo' page instead of the expected '/client/dashboard' page for the authenticated client dashboard.","expected":"After entering the configured clientOtp, the application verifies the OTP and navigates to the authenticated client dashboard (/client/dashboard).","actual":"The application navigated to the '/client/favoritevideo' page instead of '/client/dashboard'.","severity":"critical"})
+- finish_test({"status":"pass","summary":"The scenario successfully advanced from selecting 'I am licensed' to the 'license details' step at /provider/credentials.","expected":"Provider registration wizard advances to /provider/credentials after selecting 'I am licensed' and clicking 'Proceed'.","actual":"Provider registration wizard showed the 'license details' step at /provider/credentials after selecting 'I am licensed' and clicking 'Proceed'.","severity":"high"})
 
-**Step screenshots (3):**
+**Step screenshots (4):**
 
-![client_auth_002_positive_01_step01_type_otp](screenshots/client_auth_002_positive_01_step01_type_otp.png)
+![provider_reg_005_positive_01_step01_click](screenshots/provider_reg_005_positive_01_step01_click.png)
 
-![client_auth_002_positive_01_step02_click](screenshots/client_auth_002_positive_01_step02_click.png)
+![provider_reg_005_positive_01_step02_wait](screenshots/provider_reg_005_positive_01_step02_wait.png)
 
-![client_auth_002_positive_01_step03_wait](screenshots/client_auth_002_positive_01_step03_wait.png)
+![provider_reg_005_positive_01_step03_click](screenshots/provider_reg_005_positive_01_step03_click.png)
+
+![provider_reg_005_positive_01_step04_wait](screenshots/provider_reg_005_positive_01_step04_wait.png)
 
 
 ---
 
-## ⚠️ Log out from client dashboard
+## ✅ Fill provider licence details form (step 5)
 
-**Scenario ID:** CLIENT-AUTH-003-POSITIVE-01
+**Scenario ID:** PROVIDER-REG-006-POSITIVE-01
 
-**Requirement:** CLIENT-AUTH-003
+**Requirement:** PROVIDER-REG-006
 
 **Test type:** positive
 
-**Priority:** medium
+**Priority:** high
 
 **Sequence:** 6
 
 **Start mode:** continue
 
-**Depends on:** CLIENT-AUTH-002-POSITIVE-01
+**Depends on:** PROVIDER-REG-005-POSITIVE-01
 
-**Expected start state:** Authenticated client dashboard is displayed.
+**Expected start state:** Provider registration wizard is open at /provider/credentials.
 
-**Expected end state:** Healing Sky homepage is displayed with the Log in or Sign In option visible.
+**Expected end state:** Provider registration wizard advances to /provider/billing.
 
-**Criteria:** The user successfully logs out from the authenticated client dashboard and is returned to the Healing Sky homepage.
+**Criteria:** Filling all fields in provider registration step 5 correctly, accepting terms and conditions, and clicking 'Proceed' advances the user to the plan page at /provider/billing.
 
-**Status:** BLOCKED
+**Status:** PASS
 
 **Severity:** high
 
-**Summary:** A required workflow dependency did not pass, so this continuation scenario was not executed.
+**Summary:** Provider registration step 5 was completed successfully. The form fields were filled accurately, terms and conditions were accepted, the 'Proceed' button was clicked, and the wizard advanced to the plan page as expected.
 
-**Expected:** The user successfully logs out from the authenticated client dashboard and is returned to the Healing Sky homepage.
+**Expected:** Provider registration wizard advances to /provider/billing after filling all fields properly, accepting terms, and clicking Proceed.
 
-**Actual:** Required dependencies were not satisfied: CLIENT-AUTH-002-POSITIVE-01=fail.
+**Actual:** Provider registration wizard advanced to /provider/billing with all fields filled correctly and terms accepted.
 
-**Final URL:** https://prod-turningwell.dreamstechnologies.com/client/favoritevideo
+**Final URL:** https://prod-turningwell.dreamstechnologies.com/provider/billing
 
 **Final state (full page):**
 
-![CLIENT-AUTH-003-POSITIVE-01](screenshots/client_auth_003_positive_01_dependency_blocked.png)
+![PROVIDER-REG-006-POSITIVE-01](screenshots/provider_reg_006_positive_01.png)
 
-**Steps taken (1):**
+**Steps taken (10):**
 
-- dependency_check({"failedDependencies":[{"id":"CLIENT-AUTH-002-POSITIVE-01","status":"fail"}]})
+- prepare_start({"startMode":"continue","target":"current_page"})
+- get_page_state({})
+- fill_form({"fields":[{"agent_id":"e7","text":"[REDACTED]"},{"agent_id":"e11","text":"[REDACTED]"}]})
+- select_options({"selections":[{"trigger_agent_id":"e10","option_text":"California"}]})
+- click({"agent_id":"e13"})
+- get_page_state({})
+- click({"agent_id":"e15"})
+- wait({"milliseconds":5000})
+- get_page_state({})
+- finish_test({"status":"pass","summary":"Provider registration step 5 was completed successfully. The form fields were filled accurately, terms and conditions were accepted, the 'Proceed' button was clicked, and the wizard advanced to the plan page as expected.","expected":"Provider registration wizard advances to /provider/billing after filling all fields properly, accepting terms, and clicking Proceed.","actual":"Provider registration wizard advanced to /provider/billing with all fields filled correctly and terms accepted.","severity":"high"})
+
+**Step screenshots (5):**
+
+![provider_reg_006_positive_01_step01_fill_form](screenshots/provider_reg_006_positive_01_step01_fill_form.png)
+
+![provider_reg_006_positive_01_step02_select_options](screenshots/provider_reg_006_positive_01_step02_select_options.png)
+
+![provider_reg_006_positive_01_step03_click](screenshots/provider_reg_006_positive_01_step03_click.png)
+
+![provider_reg_006_positive_01_step04_click](screenshots/provider_reg_006_positive_01_step04_click.png)
+
+![provider_reg_006_positive_01_step05_wait](screenshots/provider_reg_006_positive_01_step05_wait.png)
+
+
+---
+
+## ✅ Select provider plan (step 6)
+
+**Scenario ID:** PROVIDER-REG-007-POSITIVE-01
+
+**Requirement:** PROVIDER-REG-007
+
+**Test type:** positive
+
+**Priority:** high
+
+**Sequence:** 7
+
+**Start mode:** continue
+
+**Depends on:** PROVIDER-REG-006-POSITIVE-01
+
+**Expected start state:** Provider registration wizard is open at /provider/billing.
+
+**Expected end state:** Provider registration wizard advances to /provider/card.
+
+**Criteria:** Selecting the 'Standard Account' plan and clicking 'Get Started' advances the user to the payment interface at /provider/card.
+
+**Status:** PASS
+
+**Severity:** high
+
+**Summary:** Selecting the 'Standard Account' plan and clicking 'Get Started' successfully navigated to the payment interface at '/provider/card'.
+
+**Expected:** Provider registration wizard advances to /provider/card.
+
+**Actual:** Provider registration wizard advanced to /provider/card after selecting 'Standard Account' and clicking 'Get Started'.
+
+**Final URL:** https://prod-turningwell.dreamstechnologies.com/provider/card
+
+**Final state (full page):**
+
+![PROVIDER-REG-007-POSITIVE-01](screenshots/provider_reg_007_positive_01.png)
+
+**Steps taken (7):**
+
+- prepare_start({"startMode":"continue","target":"current_page"})
+- get_page_state({})
+- click({"agent_id":"e6"})
+- click({"agent_id":"e9"})
+- wait({"milliseconds":5000})
+- get_page_state({})
+- finish_test({"status":"pass","summary":"Selecting the 'Standard Account' plan and clicking 'Get Started' successfully navigated to the payment interface at '/provider/card'.","expected":"Provider registration wizard advances to /provider/card.","actual":"Provider registration wizard advanced to /provider/card after selecting 'Standard Account' and clicking 'Get Started'.","severity":"high"})
+
+**Step screenshots (3):**
+
+![provider_reg_007_positive_01_step01_click](screenshots/provider_reg_007_positive_01_step01_click.png)
+
+![provider_reg_007_positive_01_step02_click](screenshots/provider_reg_007_positive_01_step02_click.png)
+
+![provider_reg_007_positive_01_step03_wait](screenshots/provider_reg_007_positive_01_step03_wait.png)
+
+
+---
+
+## ✅ Submit provider payment (step 7)
+
+**Scenario ID:** PROVIDER-REG-008-POSITIVE-01
+
+**Requirement:** PROVIDER-REG-008
+
+**Test type:** positive
+
+**Priority:** critical
+
+**Sequence:** 8
+
+**Start mode:** continue
+
+**Depends on:** PROVIDER-REG-007-POSITIVE-01
+
+**Expected start state:** Provider registration wizard is open at /provider/card.
+
+**Expected end state:** Payment is completed, and the application navigates to a confirmation or success page.
+
+**Criteria:** Entering all payment details correctly and clicking 'Make a Payment' successfully completes the payment process and navigates the user to a confirmation or success page.
+
+**Status:** PASS
+
+**Severity:** critical
+
+**Summary:** Payment completed successfully, and navigation redirected to the confirmation/success page.
+
+**Expected:** Payment is completed, and the application navigates to a confirmation or success page.
+
+**Actual:** Application redirected to the confirmation page 'https://prod-turningwell.dreamstechnologies.com/provider/thank-you' indicating successful payment.
+
+**Final URL:** https://prod-turningwell.dreamstechnologies.com/provider/thank-you
+
+**Final state (full page):**
+
+![PROVIDER-REG-008-POSITIVE-01](screenshots/provider_reg_008_positive_01.png)
+
+**Steps taken (8):**
+
+- prepare_start({"startMode":"continue","target":"current_page"})
+- get_page_state({})
+- fill_form({"fields":[{"agent_id":"e7","text":"[REDACTED]"},{"agent_id":"f5e0","text":"[REDACTED]"},{"agent_id":"f6e0","text":"[REDACTED]"},{"agent_id":"f7e0","text":"[REDACTED]"}]})
+- get_page_state({})
+- click({"agent_id":"e12"})
+- wait({"milliseconds":5000})
+- get_page_state({})
+- finish_test({"status":"pass","summary":"Payment completed successfully, and navigation redirected to the confirmation/success page.","expected":"Payment is completed, and the application navigates to a confirmation or success page.","actual":"Application redirected to the confirmation page 'https://prod-turningwell.dreamstechnologies.com/provider/thank-you' indicating successful payment.","severity":"critical"})
+
+**Step screenshots (3):**
+
+![provider_reg_008_positive_01_step01_fill_form](screenshots/provider_reg_008_positive_01_step01_fill_form.png)
+
+![provider_reg_008_positive_01_step02_click](screenshots/provider_reg_008_positive_01_step02_click.png)
+
+![provider_reg_008_positive_01_step03_wait](screenshots/provider_reg_008_positive_01_step03_wait.png)
+
 
 ---
 

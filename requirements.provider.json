@@ -1,0 +1,40 @@
+{
+  "baseUrl": "https://prod-turningwell.dreamstechnologies.com/",
+  "testData": {
+    "randomDob": true
+  },
+  "requirements": [
+    {
+      "id": "PROVIDER-REG-001",
+      "description": "From the Healing Sky homepage, click 'Join Healing Sky' in the main navigation and then select 'List as a Provider'. Confirm the provider registration wizard opens at /provider/register showing Full Name, Email, Phone, Date of Birth and Referral Code."
+    },
+    {
+      "id": "PROVIDER-REG-002",
+      "description": "Provider wizard step 1, personal details, at /provider/register. Fill the fields ONE AT A TIME, working down the page in the order they appear, identifying each field by its name or placeholder from the page state rather than by position. Do NOT use fill_form here: use a separate type_text call per field so the form is visibly completed step by step. 1. Full Name: type_text '{{fullName}}' into the input named 'fullName'. 2. Email: type_text '{{email}}' into the input named 'email' as literal text, with no credential_key. 3. Phone: type_text '{{phoneE164}}' into the input named 'phoneNumber', keeping the leading +1 because that is what selects the United States country code, and never clicking the small country flag beside the field. 4. Date of Birth: one select_options call setting Month '{{dobMonth}}', Date '{{dobDate}}' and Year '{{dobYear}}' together. These are PrimeReact dropdowns, so use the visible trigger or label element, never a hidden select. 5. Referral Code: type_text '{{referralCode}}' into the input named 'referral_code'. Then call get_page_state and check every field holds its value rather than placeholder text; setting the Date of Birth re-renders the form and can silently clear the phone field, so if the input named 'phoneNumber' shows only a dialling code such as '+1' with no digits, re-enter '{{phoneE164}}'. Finally click the 'Proceed' button at the bottom of the form. The step passes once the wizard advances to /provider/address."
+    },
+    {
+      "id": "PROVIDER-REG-003",
+      "description": "Provider wizard step 2, address, at /provider/address. 1. type_text '{{addressLookup}}' into the input with placeholder 'Address Lookup'. The type_text tool waits for the Google Places suggestions itself and clicks the first one for you, so do NOT expect to see a suggestion list in the next page state: by then it has already been chosen and closed. 2. Wait 2000 ms, then call get_page_state and read the Address Lookup field back. If it now holds a fuller address than the one typed, typically with a postcode added, the lookup resolved and you should carry on. 3. Only if the field still holds exactly the typed text and the address did not resolve, try once more: type_text the same address again, wait 3000 ms, call get_page_state and click the first address suggestion if one is visible. Do not report this step blocked until that second attempt has also failed. 4. Confirm the Country field reads 'United States'; it is normally filled in by the address lookup, so only set it if it is empty. 5. Click 'Proceed'. The step passes once the wizard advances to /provider/location."
+    },
+    {
+      "id": "PROVIDER-REG-004",
+      "description": "Provider wizard step 3, provider and listing details, at /provider/location. This one page reveals its fields progressively, so set them in order and call get_page_state after each one, because the next field does not exist in the DOM until the previous one is set. They are PrimeReact dropdowns: click the visible dropdown label or trigger, never a hidden select, and use a SEPARATE select_options call per dropdown with that dropdown's own trigger id. 1. Category: '{{providerCategory}}'. 2. Then Provider Classification appears: '{{providerClassification}}'. 3. Then Sub-Category appears: '{{providerSubCategory}}'. 4. Leave the optional Group and Provider Type fields alone. 5. NPI Number: type_text '{{npiNumber}}' into the input named 'npi_number'. The form validates that the NPI is exactly 10 digits and refuses to advance otherwise. 6. Call get_page_state, confirm all three selections show the chosen values and the NPI field holds its digits, then click 'Proceed'. The step passes once the wizard advances to /provider/credential."
+    },
+    {
+      "id": "PROVIDER-REG-005",
+      "description": "Provider wizard step 4, licence status, at /provider/credential. Select the radio option labelled 'I am licensed', which is the radio named 'license' with value 'i_am_licensed_my_license_information_is_below', and not any of the pre-licensed, certification or not-licensed alternatives. Call get_page_state to confirm that option is the selected one, then click 'Proceed'. The step passes once the wizard advances to /provider/credentials."
+    },
+    {
+      "id": "PROVIDER-REG-006",
+      "description": "Provider wizard step 5, licence details, at /provider/credentials. 1. Leave the Provider Role dropdown at whatever value it was pre-filled with. 2. License Number: type_text '{{licenseNumber}}' into the input named 'licenseNumber'. 3. State: one select_options call setting the State dropdown to '{{licenseState}}', clicking its visible PrimeReact trigger. 4. License Expiration: type_text '{{licenseExpiry}}' into the input named 'licenseExpYear', which takes the MM/YYYY format. 5. Accept Terms and Conditions: click the checkbox named 'acceptTerms' and confirm with get_page_state that it now reads as checked. 6. Click 'Proceed'. The step passes once the wizard advances to the plan page at /provider/billing."
+    },
+    {
+      "id": "PROVIDER-REG-007",
+      "description": "Provider wizard step 6, plan selection, at /provider/billing. Select the 'Standard Account' plan, confirm with get_page_state that Standard rather than any other plan is the selected one, then click the 'Get Started' button belonging to that plan. Wait for the payment screen and confirm the wizard reaches /provider/card."
+    },
+    {
+      "id": "PROVIDER-REG-008",
+      "description": "Provider wizard step 7, payment, at /provider/card. 1. Make sure the 'Credit Card/Debit Card' payment method is the selected radio, not 'Bank Transfer'. 2. Cardholder name: type_text '{{fullName}}' into the input named 'name' with placeholder 'Enter card name'. 3. The three card fields are Stripe Elements, each inside its own iframe, and appear in the page state with a frame-prefixed id such as 'f1e0' rather than the usual 'e1'. Every one of them is a TEXT INPUT: type into them with type_text or fill_form and never with select_options, because none of them is a dropdown. Match them by name: the card number is named 'cardnumber', the expiry is named 'exp-date' with placeholder 'MM / YY', and the security code is named 'cvc' with placeholder 'CVV'. Enter them as literal text with no credential_key: card number '{{cardNumber}}', expiry '{{cardExpiry}}', security code '{{cardCvv}}'. The expiry is a single field taking the whole '{{cardExpiry}}' string, NOT a separate month and year. 4. Leave the Promo Code and 'Remember bank card' controls alone. 5. Call get_page_state and confirm the card fields hold their values, then click the 'Make a Payment' button. 6. Wait 5000 ms, call get_page_state, and if nothing has changed wait a further 5000 ms and inspect again. Payment succeeded if a success or confirmation message is displayed, or the application navigates away from /provider/card to a provider dashboard, onboarding-complete or thank-you page. Report the exact message and the final URL that is reached."
+    }
+  ]
+}

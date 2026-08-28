@@ -720,9 +720,329 @@ async function prepareScenarioStart(
 //
 // ============================================================
 
-async function getPageState(
+// ============================================================
+// Fields inside iframes
+// ============================================================
+//
+// page.evaluate only reaches the main frame, so anything rendered
+// inside an iframe is missing from the snapshot entirely. The
+// provider payment step is exactly that: Stripe Elements puts the
+// card number, the expiry and the CVC each in its own cross-origin
+// iframe, so without this the agent sees a payment form with no
+// card fields on it and cannot pay.
+//
+// Ids are prefixed per frame (f1e0, f2e0, ...) so they cannot
+// collide with the main frame's e0, e1, e2 ids.
+//
+// ============================================================
+
+async function collectFrameFields(
+  page
+) {
+
+  const collected =
+    [];
+
+
+  let frameIndex =
+    0;
+
+
+  for (
+    const frame of
+    page.frames()
+  ) {
+
+    if (
+      frame ===
+      page.mainFrame()
+    ) {
+
+      continue;
+    }
+
+
+    frameIndex += 1;
+
+
+    const prefix =
+      `f${frameIndex}`;
+
+
+    const fields =
+      await frame
+        .evaluate(
+          (idPrefix) => {
+
+            document
+              .querySelectorAll(
+                "[data-agent-id]"
+              )
+              .forEach(
+                (element) => {
+
+                  element.removeAttribute(
+                    "data-agent-id"
+                  );
+                }
+              );
+
+
+            const rows =
+              [];
+
+
+            let next =
+              0;
+
+
+            const controls =
+              document.querySelectorAll(
+                "input, textarea, select, button"
+              );
+
+
+            for (
+              const element of
+              controls
+            ) {
+
+              const type =
+                (
+                  element.getAttribute(
+                    "type"
+                  ) || ""
+                ).toLowerCase();
+
+
+              if (type === "hidden") {
+
+                continue;
+              }
+
+
+              // ------------------------------------------
+              // Skip the autofill mirrors
+              // ------------------------------------------
+              //
+              // Stripe puts one real field in each frame and
+              // surrounds it with 2x2 transparent aria-hidden
+              // copies that exist only to bait browser autofill.
+              // They carry the names a form filler looks for --
+              // cc-exp-month, cc-exp-year, cc-csc -- so left in
+              // the snapshot they read as the actual expiry and
+              // security controls. An agent that goes for them
+              // types into inputs that do nothing, and concludes
+              // the payment form is broken.
+              //
+              // ------------------------------------------
+
+              if (
+                element.disabled ||
+                element.getAttribute(
+                  "aria-hidden"
+                ) === "true"
+              ) {
+
+                continue;
+              }
+
+
+              const style =
+                window.getComputedStyle(
+                  element
+                );
+
+
+              if (
+                style.visibility ===
+                  "hidden" ||
+                Number(
+                  style.opacity
+                ) === 0
+              ) {
+
+                continue;
+              }
+
+
+              const rect =
+                element.getBoundingClientRect();
+
+
+              // The mirrors are 2x2; a real field never is.
+
+              if (
+                rect.width < 4 ||
+                rect.height < 4
+              ) {
+
+                continue;
+              }
+
+
+              const id =
+                `${idPrefix}e${next++}`;
+
+
+              element.setAttribute(
+                "data-agent-id",
+                id
+              );
+
+
+              rows.push({
+
+                // Same key the main-frame elements use, so a frame
+                // field is addressed exactly like any other.
+                id,
+
+                tag:
+                  element.tagName.toLowerCase(),
+
+                type:
+                  type || undefined,
+
+                name:
+                  element.getAttribute(
+                    "name"
+                  ) || undefined,
+
+                placeholder:
+                  element.getAttribute(
+                    "placeholder"
+                  ) || undefined,
+
+                text:
+                  (
+                    element.getAttribute(
+                      "aria-label"
+                    ) ||
+                    (element.innerText || "").trim()
+                  ).slice(
+                    0,
+                    80
+                  ) || undefined,
+
+                inFrame:
+                  true,
+              });
+            }
+
+
+            return rows;
+          },
+
+          prefix
+        )
+        .catch(
+          () => []
+        );
+
+
+    for (
+      const field of
+      fields
+    ) {
+
+      collected.push(
+        field
+      );
+    }
+  }
+
+
+  return collected;
+}
+
+export async function getPageState(
   page,
   testCredentials
+) {
+
+  // ----------------------------------------------------------
+  // An empty snapshot is a race, not an empty page
+  // ----------------------------------------------------------
+  //
+  // Snapshotting a single-page app a moment too early returns zero
+  // elements, and the agent reads that as a blank, non-interactable
+  // page and abandons the whole scenario -- which is what happened
+  // to a run that opened on a perfectly healthy homepage.
+  //
+  // A loaded page always has something on it, so retry before
+  // believing otherwise.
+  //
+  // ----------------------------------------------------------
+
+  let rawState =
+    await collectPageState(
+      page
+    );
+
+
+  for (
+    let attempt = 0;
+    attempt < 2 &&
+      rawState.elements.length === 0;
+    attempt++
+  ) {
+
+    await page
+      .waitForLoadState(
+        "networkidle",
+        {
+          timeout:
+            5000,
+        }
+      )
+      .catch(
+        () => {}
+      );
+
+
+    await page.waitForTimeout(
+      1500
+    );
+
+
+    rawState =
+      await collectPageState(
+        page
+      );
+  }
+
+
+  // ----------------------------------------------------------
+  // Append anything rendered inside an iframe.
+  // ----------------------------------------------------------
+
+  const frameFields =
+    await collectFrameFields(
+      page
+    );
+
+
+  if (
+    frameFields.length >
+    0
+  ) {
+
+    rawState.elements =
+      rawState.elements.concat(
+        frameFields
+      );
+  }
+
+
+  return redactSecrets(
+    rawState,
+    testCredentials
+  );
+}
+
+
+async function collectPageState(
+  page
 ) {
 
   const rawState =
@@ -769,15 +1089,55 @@ async function getPageState(
               );
 
 
+            // --------------------------------------------------
+            // Transparent but real checkboxes and radios
+            // --------------------------------------------------
+            //
+            // A custom checkbox hides its native input with
+            // opacity:0 and paints a span over the top. The input
+            // still occupies its box and still takes the click --
+            // it IS the control. Dropping it as invisible leaves
+            // the agent with nothing to click but the descriptive
+            // label beside it, which toggles nothing, so the form
+            // keeps reporting the box unticked however many times
+            // it is clicked. That is exactly how the provider
+            // Accept Terms checkbox behaves.
+            //
+            // --------------------------------------------------
+
+            const inputType =
+              (
+                element.getAttribute(
+                  "type"
+                ) || ""
+              ).toLowerCase();
+
+
+            const transparentButClickable =
+              element.tagName
+                ?.toLowerCase() ===
+                "input" &&
+              (
+                inputType ===
+                  "checkbox" ||
+                inputType ===
+                  "radio"
+              ) &&
+              style.pointerEvents !==
+                "none";
+
+
             if (
               style.display ===
                 "none" ||
               style.visibility ===
                 "hidden" ||
-              Number(
-                style.opacity
-              ) ===
-                0
+              (
+                Number(
+                  style.opacity
+                ) === 0 &&
+                !transparentButClickable
+              )
             ) {
 
               return false;
@@ -1194,6 +1554,8 @@ async function getPageState(
                 "li.p-dropdown-item",
                 "li.p-multiselect-item",
                 "li.p-autocomplete-item",
+                ".p-dropdown",
+                ".p-dropdown-label",
                 ".p-dropdown-trigger",
                 ".pac-item",
 
@@ -1247,6 +1609,27 @@ async function getPageState(
           processed.add(
             element
           );
+
+
+          // --------------------------------------------------
+          // PrimeReact renders a screen-reader mirror of every
+          // dropdown -- a real <select> inside
+          // .p-hidden-accessible. It has a box, so it looks
+          // visible, but span.p-dropdown-label covers it and
+          // every click on it is intercepted and times out.
+          // The visible .p-dropdown root, label and trigger are
+          // captured separately, so drop the mirror.
+          // --------------------------------------------------
+
+          if (
+            element.closest &&
+            element.closest(
+              ".p-hidden-accessible"
+            )
+          ) {
+
+            continue;
+          }
 
 
           const tag =
@@ -1858,10 +2241,7 @@ async function getPageState(
     );
 
 
-  return redactSecrets(
-    rawState,
-    testCredentials
-  );
+  return rawState;
 }
 
 
@@ -1886,20 +2266,44 @@ async function findAgentElement(
   }
 
 
-  const locator =
-    page.locator(
-      `[data-agent-id="${agentId}"]`
-    );
+  const selector =
+    `[data-agent-id="${agentId}"]`;
 
 
-  const count =
-    await locator.count();
+  // The id may belong to an element inside an iframe -- a Stripe
+  // card field, for instance -- and page.locator does not cross
+  // frame boundaries, so every frame has to be checked.
 
-
-  if (
-    count ===
-      0
+  for (
+    const frame of
+    page.frames()
   ) {
+
+    const candidate =
+      frame.locator(
+        selector
+      );
+
+
+    const found =
+      await candidate
+        .count()
+        .catch(
+          () => 0
+        );
+
+
+    if (
+      found >
+      0
+    ) {
+
+      return candidate.first();
+    }
+  }
+
+
+  {
 
     const error =
       new Error(
@@ -1913,9 +2317,6 @@ async function findAgentElement(
 
     throw error;
   }
-
-
-  return locator.first();
 }
 
 
@@ -2005,7 +2406,7 @@ async function settleAfterClick(
 }
 
 
-async function clickElement(
+export async function clickElement(
   page,
   agentId
 ) {
@@ -2014,11 +2415,144 @@ async function clickElement(
     page.url();
 
 
-  const element =
+  let element =
     await findAgentElement(
       page,
       agentId
     );
+
+
+  // ----------------------------------------------------------
+  // A label that describes a control, but is not wired to it
+  // ----------------------------------------------------------
+  //
+  // Clicking a label toggles its checkbox -- but only when the two
+  // are actually associated by `for` or by nesting. This app renders
+  // its field captions as bare <label> text in a wrapper div, so the
+  // Accept Terms caption looks exactly like the control to the agent,
+  // carries the same text, and comes first in the snapshot. Clicking
+  // it succeeds, changes nothing, and the form goes on reporting the
+  // terms unaccepted.
+  //
+  // Redirecting to the single checkbox or radio the label sits with
+  // is what a browser does for a properly wired label, and what the
+  // person reading the caption meant.
+  //
+  // ----------------------------------------------------------
+
+  const redirectedToControl =
+    await element
+      .evaluate(
+        (el) => {
+
+          if (
+            el.tagName
+              ?.toLowerCase() !==
+            "label"
+          ) {
+
+            return false;
+          }
+
+
+          // Clear any marker left by an earlier redirect, so the
+          // locator below can only match this one.
+
+          document
+            .querySelectorAll(
+              "[data-agent-label-target]"
+            )
+            .forEach(
+              (node) => {
+
+                node.removeAttribute(
+                  "data-agent-label-target"
+                );
+              }
+            );
+
+
+          // Even a properly wired label needs the redirect. This
+          // caption ends in a "Terms and Conditions" link, and a
+          // click aimed at the label's centre lands on the link,
+          // which opens the terms and toggles nothing.
+
+          if (el.control) {
+
+            el.control.setAttribute(
+              "data-agent-label-target",
+              "1"
+            );
+
+
+            return true;
+          }
+
+
+          // Widen the search a few levels: the caption and the
+          // control usually sit in sibling wrappers.
+
+          let scope =
+            el.parentElement;
+
+
+          for (
+            let depth = 0;
+            depth < 3 && scope;
+            depth++
+          ) {
+
+            const controls =
+              scope.querySelectorAll(
+                "input[type='checkbox'], input[type='radio']"
+              );
+
+
+            if (
+              controls.length ===
+              1
+            ) {
+
+              controls[0].setAttribute(
+                "data-agent-label-target",
+                "1"
+              );
+
+
+              return true;
+            }
+
+
+            scope =
+              scope.parentElement;
+          }
+
+
+          return false;
+        }
+      )
+      .catch(
+        () => false
+      );
+
+
+  if (redirectedToControl) {
+
+    const target =
+      page.locator(
+        "[data-agent-label-target='1']"
+      );
+
+
+    if (
+      (await target.count()) >
+      0
+    ) {
+
+      element =
+        target.first();
+    }
+  }
 
 
   try {
@@ -2055,6 +2589,55 @@ async function clickElement(
     page,
     agentId
   );
+
+
+  // Checkbox and radio state before the click, so a click that lands on
+  // a decorative overlay instead of the real control can be detected
+  // afterwards. See the verification block at the end of this function.
+
+  const toggleBefore =
+    await element
+      .evaluate(
+        (el) => {
+
+          if (
+            el.tagName.toLowerCase() !==
+            "input"
+          ) {
+
+            return null;
+          }
+
+
+          const type =
+            (
+              el.getAttribute(
+                "type"
+              ) || ""
+            ).toLowerCase();
+
+
+          if (
+            type !== "checkbox" &&
+            type !== "radio"
+          ) {
+
+            return null;
+          }
+
+
+          return {
+
+            type,
+
+            checked:
+              el.checked,
+          };
+        }
+      )
+      .catch(
+        () => null
+      );
 
 
   try {
@@ -2287,6 +2870,144 @@ async function clickElement(
       throw new Error(
         `Could not click ${agentId}: ${normalClickError.message}; fallback: ${fallbackError.message}`
       );
+    }
+  }
+
+
+  // ----------------------------------------------------------
+  // Did the checkbox actually tick?
+  // ----------------------------------------------------------
+  //
+  // A styled checkbox keeps its real <input> underneath a span or a
+  // pseudo-element that paints the box. Playwright clicks the centre
+  // point, the decoration swallows it, nothing throws and the control
+  // never toggles. The provider Accept Terms checkbox behaves exactly
+  // like that: the click reports success and the form still refuses to
+  // submit for want of accepted terms.
+  //
+  // Only an unchecked control is escalated. Clicking an already-checked
+  // radio is a no-op by design and must not be flipped off.
+  //
+  // ----------------------------------------------------------
+
+  if (
+    toggleBefore &&
+    toggleBefore.checked ===
+      false
+  ) {
+
+    const isChecked =
+      async () =>
+        await element
+          .evaluate(
+            (el) => el.checked
+          )
+          .catch(
+            () => null
+          );
+
+
+    if (
+      (await isChecked()) ===
+      false
+    ) {
+
+      await element
+        .evaluate(
+          (el) => {
+
+            const label =
+              (
+                el.labels &&
+                el.labels[0]
+              ) ||
+              el.closest(
+                "label"
+              );
+
+
+            if (label) {
+
+              label.click();
+            }
+          }
+        )
+        .catch(
+          () => {}
+        );
+
+
+      await page.waitForTimeout(
+        250
+      );
+    }
+
+
+    if (
+      (await isChecked()) ===
+      false
+    ) {
+
+      await element
+        .click({
+
+          timeout:
+            8000,
+
+          force:
+            true,
+        })
+        .catch(
+          () => {}
+        );
+
+
+      await page.waitForTimeout(
+        250
+      );
+    }
+
+
+    // Last resort: set it directly and tell React about it.
+
+    if (
+      (await isChecked()) ===
+      false
+    ) {
+
+      await element
+        .evaluate(
+          (el) => {
+
+            el.checked =
+              true;
+
+
+            el.dispatchEvent(
+              new Event(
+                "input",
+                {
+                  bubbles:
+                    true,
+                }
+              )
+            );
+
+
+            el.dispatchEvent(
+              new Event(
+                "change",
+                {
+                  bubbles:
+                    true,
+                }
+              )
+            );
+          }
+        )
+        .catch(
+          () => {}
+        );
     }
   }
 
@@ -2779,12 +3500,39 @@ async function typeText(
     }).catch(() => false);
 
     if (isAddressField) {
-      await page.waitForTimeout(800);
       const suggestion = page.locator(".pac-container .pac-item, [class*='pac-item'], [class*='suggestion-item'], [id*='typeahead'] li").first();
-      if ((await suggestion.count()) > 0 && (await suggestion.isVisible())) {
+
+      // Google Places answers over the network, so a fixed 800ms wait is a
+      // race: on a slow response the list is still empty, the agent sees no
+      // suggestion and reports the whole step blocked. Poll instead.
+      const waitForSuggestion = async (timeout) =>
+        await suggestion
+          .waitFor({ state: "visible", timeout })
+          .then(() => true)
+          .catch(() => false);
+
+      let ready = await waitForSuggestion(5000);
+
+      // fill() dispatches a single input event, which the widget can miss
+      // entirely. Retyping the last character with a real keystroke forces
+      // a fresh predictions request.
+      if (!ready) {
+        await element.click({ timeout: 5000 }).catch(() => {});
+        await element.press("End").catch(() => {});
+        await element.press("Backspace").catch(() => {});
+        await page.waitForTimeout(300);
+        await element
+          .type(String(resolvedText).slice(-1), { delay: 150 })
+          .catch(() => {});
+        ready = await waitForSuggestion(6000);
+      }
+
+      if (ready) {
         await highlightLocator(page, suggestion);
-        await suggestion.click({ timeout: 3000 }).catch(() => {});
-        await page.waitForTimeout(400);
+        await suggestion.click({ timeout: 5000 }).catch(() => {});
+        await page.waitForTimeout(600);
+      } else {
+        console.warn(`Address field ${agentId}: no autocomplete suggestion appeared.`);
       }
     }
   } catch {}
@@ -3104,6 +3852,27 @@ async function selectOptions(
     [];
 
 
+  // ----------------------------------------------------------
+  // One trigger sets one dropdown
+  // ----------------------------------------------------------
+  //
+  // A cascading form reveals its next dropdown only once the
+  // previous one is set, so at snapshot time only the first exists
+  // and the agent has exactly one id to work with. Asked for three
+  // selections it will happily send that same id three times, which
+  // can only reopen the dropdown it already set. Every attempt after
+  // the first then times out and the agent concludes the options are
+  // unselectable and gives up on a form that is working fine.
+  //
+  // Refusing the repeat with an explicit instruction turns a dead end
+  // into a retry the agent can act on.
+  //
+  // ----------------------------------------------------------
+
+  const usedTriggers =
+    new Set();
+
+
   for (
     const selection of
     selections
@@ -3116,6 +3885,37 @@ async function selectOptions(
       option_text:
         optionText,
     } = selection;
+
+
+    if (
+      usedTriggers.has(
+        triggerId
+      )
+    ) {
+
+      results.push({
+
+        trigger_agent_id:
+          triggerId,
+
+        option_text:
+          optionText,
+
+        ok:
+          false,
+
+        error:
+          `Trigger ${triggerId} was already used earlier in this same call, so it cannot also be the trigger for "${optionText}". Each dropdown has its own trigger id. If the other dropdowns were not in the last snapshot, they are revealed only once this one is set: call get_page_state now and set the next dropdown with the new id it reports.`,
+      });
+
+
+      continue;
+    }
+
+
+    usedTriggers.add(
+      triggerId
+    );
 
 
     try {
@@ -3285,6 +4085,40 @@ async function selectOptions(
         !clicked
       ) {
 
+        // Report what the panel actually offered. Without it the
+        // agent cannot tell a mistyped option from an empty list,
+        // and treats both as the dropdown being broken.
+
+        const offered =
+          [];
+
+
+        for (
+          let index = 0;
+          index < Math.min(total, 15);
+          index++
+        ) {
+
+          const text =
+            (
+              await options
+                .nth(index)
+                .innerText()
+                .catch(
+                  () => ""
+                )
+            ).trim();
+
+
+          if (text) {
+
+            offered.push(
+              text
+            );
+          }
+        }
+
+
         results.push({
 
           trigger_agent_id:
@@ -3296,8 +4130,13 @@ async function selectOptions(
           ok:
             false,
 
+          options_offered:
+            offered,
+
           error:
-            `No option with exact text "${wanted}" was visible after opening the dropdown.`,
+            offered.length > 0
+              ? `No option with exact text "${wanted}" was visible after opening the dropdown. The options offered were: ${offered.join(", ")}.`
+              : `Opening trigger ${triggerId} showed no options at all, so it is probably not this dropdown's real trigger. Call get_page_state and use the id of the visible dropdown control itself.`,
         });
 
 
@@ -3930,7 +4769,7 @@ const tools = [
         "select_options",
 
       description:
-        "Set one or more custom dropdowns (month, date, year, country, state) in a single step. For each dropdown give the agent_id of its trigger and the exact visible text of the option you want. The dropdown is opened, the option is located by its text and clicked for you, so you do NOT need to call get_page_state in between. Strongly preferred over clicking dropdown triggers and options yourself.",
+        "Set one or more custom dropdowns (month, date, year, country, state) in a single step. For each dropdown give the agent_id of its trigger and the exact visible text of the option you want. The dropdown is opened, the option is located by its text and clicked for you, so you do NOT need to call get_page_state in between. Strongly preferred over clicking dropdown triggers and options yourself. Every selection must name a DIFFERENT trigger_agent_id, because one trigger sets one dropdown: sending the same id twice only reopens the dropdown it already set, and is rejected. Where a form reveals each dropdown only once the previous one is set, the later ones are absent from the current snapshot: set the one you can see, then call get_page_state to learn the id of the next.",
 
       parameters: {
 

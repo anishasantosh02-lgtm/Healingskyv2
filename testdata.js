@@ -113,6 +113,27 @@ const US_ADDRESSES = [
 ];
 
 
+// ============================================================
+// Provider credentialing pools
+// ============================================================
+//
+// The provider onboarding wizard asks for an NPI number, a state
+// licence and a card. None of these are secrets: the NPI and licence
+// numbers are structurally shaped throwaways, and the card is the
+// published Stripe test card, which is what the sandbox accepts.
+//
+// ============================================================
+
+const US_STATES = [
+  "Alabama", "Arizona", "California", "Colorado", "Connecticut",
+  "Florida", "Georgia", "Illinois", "Indiana", "Kansas", "Kentucky",
+  "Maryland", "Massachusetts", "Michigan", "Minnesota", "Missouri",
+  "Nevada", "New Jersey", "New York", "North Carolina", "Ohio",
+  "Oregon", "Pennsylvania", "Tennessee", "Texas", "Utah", "Virginia",
+  "Washington", "Wisconsin",
+];
+
+
 const MONTHS = [
   "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December",
@@ -202,6 +223,35 @@ export function generateDateOfBirth({ random = false } = {}) {
 }
 
 
+/**
+ * Random numeric identifier with a non-zero leading digit.
+ *
+ * Used for the NPI number the provider wizard asks for.
+ */
+export function generateNpiNumber(digits = 6) {
+  let value = String(randomInt(1, 9));
+
+  for (let index = 1; index < digits; index += 1) {
+    value += String(randomInt(0, 9));
+  }
+
+  return value;
+}
+
+
+/**
+ * Random 7-digit state licence number.
+ */
+export function generateLicenseNumber(digits = 7) {
+  return generateNpiNumber(digits);
+}
+
+
+export function generateUsState() {
+  return pick(US_STATES);
+}
+
+
 // ============================================================
 // Full dataset
 // ============================================================
@@ -236,6 +286,23 @@ export function generateTestData(overrides = {}) {
   const dob = generateDateOfBirth({
     random: overrides.randomDob === true,
   });
+
+
+  const providerPhoneNumber =
+    overrides.providerPhoneNumber ||
+    process.env.TEST_PROVIDER_PHONE_NUMBER ||
+    generateUsPhoneNumber();
+
+
+  const licenseExpiryMonth =
+    overrides.licenseExpiryMonth ||
+    process.env.TEST_LICENSE_EXPIRY_MONTH ||
+    "11";
+
+  const licenseExpiryYear =
+    overrides.licenseExpiryYear ||
+    process.env.TEST_LICENSE_EXPIRY_YEAR ||
+    "2030";
 
   return {
     fullName,
@@ -276,6 +343,90 @@ export function generateTestData(overrides = {}) {
       overrides.referralCode ||
       process.env.TEST_REFERRAL_CODE ||
       "NAN5EM09",
+
+    // ------------------------------------------------------
+    // Provider onboarding
+    // ------------------------------------------------------
+
+    // A run that exercises the client AND provider journeys
+    // registers twice, and an account is unique by email. Reusing
+    // one address would make whichever flow ran second fail as a
+    // duplicate, so the provider signs up under its own identity.
+    // The phone is separated too, in case that is unique as well.
+
+    providerEmail:
+      overrides.providerEmail ||
+      process.env.TEST_PROVIDER_EMAIL ||
+      generateEmail(
+        `provider ${fullName}`
+      ),
+
+    providerPhoneNumber:
+      providerPhoneNumber,
+
+    providerPhoneE164:
+      overrides.providerPhoneE164 ||
+      `+1${providerPhoneNumber}`,
+
+    npiNumber:
+      overrides.npiNumber ||
+      process.env.TEST_NPI_NUMBER ||
+      generateNpiNumber(10),
+
+    licenseNumber:
+      overrides.licenseNumber ||
+      process.env.TEST_LICENSE_NUMBER ||
+      generateLicenseNumber(7),
+
+    licenseState:
+      overrides.licenseState ||
+      process.env.TEST_LICENSE_STATE ||
+      generateUsState(),
+
+    licenseExpiryMonth,
+    licenseExpiryYear,
+
+    licenseExpiry:
+      overrides.licenseExpiry ||
+      process.env.TEST_LICENSE_EXPIRY ||
+      licenseExpiryMonth + "/" + licenseExpiryYear,
+
+    providerCategory:
+      overrides.providerCategory ||
+      process.env.TEST_PROVIDER_CATEGORY ||
+      "Psychiatry",
+
+    providerClassification:
+      overrides.providerClassification ||
+      process.env.TEST_PROVIDER_CLASSIFICATION ||
+      "Individual Provider",
+
+    providerSubCategory:
+      overrides.providerSubCategory ||
+      process.env.TEST_PROVIDER_SUBCATEGORY ||
+      "Psychiatrists",
+
+    // ------------------------------------------------------
+    // Payment
+    // ------------------------------------------------------
+    //
+    // Fixed on purpose: the sandbox settles only the Stripe test card,
+    // so randomising it would fail every run.
+
+    cardNumber:
+      overrides.cardNumber ||
+      process.env.TEST_CARD_NUMBER ||
+      "4242 4242 4242 4242",
+
+    cardExpiry:
+      overrides.cardExpiry ||
+      process.env.TEST_CARD_EXPIRY ||
+      "11/29",
+
+    cardCvv:
+      overrides.cardCvv ||
+      process.env.TEST_CARD_CVV ||
+      "442",
   };
 }
 

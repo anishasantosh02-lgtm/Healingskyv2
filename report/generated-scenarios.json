@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-28T09:36:31.249Z",
+  "generatedAt": "2026-08-28T12:27:57.427Z",
   "runnerVersion": "startMode-dependency-credentials-v3",
   "baseUrl": "https://prod-turningwell.dreamstechnologies.com/",
   "scenarios": [
@@ -10,8 +10,8 @@
       "startMode": "base_url",
       "dependsOn": [],
       "type": "navigation",
-      "name": "Navigate to client registration page",
-      "criteria": "Clicking Join Healing Sky in the main navigation and selecting Join as a Client displays the client registration page.",
+      "name": "Navigate to Client Registration page via Join Healing Sky.",
+      "criteria": "Clicking 'Join Healing Sky' in the main navigation and selecting 'Join as a Client' opens the client registration page.",
       "priority": "high",
       "preconditions": [
         "Healing Sky homepage is loaded."
@@ -29,25 +29,25 @@
         "CLIENT-REG-001-POSITIVE-01"
       ],
       "type": "positive",
-      "name": "Step-by-step partial form completion for client registration",
-      "criteria": "Filling in the Full Name, Email, Phone Number, Date of Birth, and Address Lookup fields step by step without touching Referral Code maintains the values in all fields other than Referral Code.",
+      "name": "Fill client registration form excluding referral code and submission.",
+      "criteria": "The fields 'Full Name', 'Email', 'Phone Number', 'Date of Birth', and 'Address Lookup' retain their values after being entered. The 'Referral Code' field remains empty.",
       "priority": "high",
       "preconditions": [
         "Client registration page is displayed."
       ],
       "testData": {
-        "fullName": "Emerson Foster",
-        "email": "emerson.foster.mtcrblqw145@yopmail.com",
-        "phoneNumber": "+12026094010",
-        "dob": {
-          "month": "June",
-          "date": "4",
-          "year": "1999"
+        "fullName": "Cameron Palmer",
+        "email": "cameron.palmer.mtcxfy50306@yopmail.com",
+        "phoneNumber": "+18587012371",
+        "dateOfBirth": {
+          "month": "March",
+          "date": "26",
+          "year": "1974"
         },
-        "address": "400 Broad St, Seattle, WA"
+        "address": "350 5th Ave, New York, NY"
       },
       "startState": "Client registration page is displayed.",
-      "endState": "The form contains values for Full Name, Email, Phone Number, Date of Birth, and Address Lookup. Referral Code remains empty."
+      "endState": "Client registration form is completed, except for the 'Referral Code' field."
     },
     {
       "id": "CLIENT-REG-003-POSITIVE-01",
@@ -58,17 +58,17 @@
         "CLIENT-REG-002-POSITIVE-01"
       ],
       "type": "positive",
-      "name": "Complete registration form and submit",
-      "criteria": "Entering Referral Code and completing form submission displays either a success message or redirects to the client login page.",
+      "name": "Complete client registration by filling Referral Code and submitting.",
+      "criteria": "Submit the client registration form and confirm registration succeeds if either the success confirmation message is displayed or the application navigates to the client login page.",
       "priority": "critical",
       "preconditions": [
-        "Client registration form fields contain valid values for all fields except Referral Code."
+        "Client registration form (excluding 'Referral Code') is completed."
       ],
       "testData": {
         "referral_code": "NAN5EM09"
       },
-      "startState": "Client registration form is partially completed with Referral Code empty.",
-      "endState": "Registration is successful, displaying a success message or redirecting to the client login page."
+      "startState": "Client registration page is displayed with all fields filled, except 'Referral Code'.",
+      "endState": "Client is registered and either sees a success confirmation or is redirected to the client login page."
     },
     {
       "id": "CLIENT-AUTH-001-POSITIVE-01",
@@ -77,9 +77,9 @@
       "startMode": "base_url",
       "dependsOn": [],
       "type": "positive",
-      "name": "Navigate to client sign-in and open OTP verification screen",
-      "criteria": "Selecting Email as the OTP delivery method and entering the configured client email proceeds to the OTP verification screen.",
-      "priority": "critical",
+      "name": "Navigate to client OTP authentication screen.",
+      "criteria": "Using the configured client email and selecting Email as the OTP delivery method, clicking 'Log in' displays the OTP verification interface.",
+      "priority": "high",
       "preconditions": [
         "Healing Sky homepage is loaded."
       ],
@@ -96,15 +96,15 @@
         "CLIENT-AUTH-001-POSITIVE-01"
       ],
       "type": "positive",
-      "name": "OTP-based client sign-in",
-      "criteria": "Entering the configured OTP bypass value authenticates the client, showing the authenticated client page or dashboard.",
+      "name": "Successfully log in as a client using configured OTP bypass value.",
+      "criteria": "Successful login is achieved if the sign-in success message 'OTP verified successfully' is displayed or an authenticated client page under '/client/' is loaded. The test also passes if redirected to '/client/dashboard'.",
       "priority": "critical",
       "preconditions": [
-        "Client OTP verification screen is displayed."
+        "Client OTP verification interface is displayed."
       ],
       "testData": {},
       "startState": "Client OTP verification screen is displayed.",
-      "endState": "Client is signed in and navigated to an authenticated client page like the dashboard."
+      "endState": "Client dashboard or another authenticated client page is displayed."
     },
     {
       "id": "CLIENT-AUTH-003-POSITIVE-01",
@@ -115,15 +115,197 @@
         "CLIENT-AUTH-002-POSITIVE-01"
       ],
       "type": "positive",
-      "name": "Log out from authenticated client dashboard",
-      "criteria": "Using the profile menu to log out successfully returns to the Healing Sky homepage showing the Log in or Sign In option.",
+      "name": "Log out from authenticated client dashboard.",
+      "criteria": "Client is signed out and returned to the Healing Sky homepage with the 'Log in' option visible again.",
       "priority": "high",
       "preconditions": [
-        "User is signed into the client dashboard."
+        "Client is authenticated on the dashboard."
       ],
       "testData": {},
-      "startState": "Authenticated client dashboard is displayed.",
-      "endState": "Healing Sky homepage is loaded with Log in or Sign In option visible."
+      "startState": "Client dashboard is displayed.",
+      "endState": "Client is signed out and Healing Sky homepage is displayed."
+    },
+    {
+      "id": "PROVIDER-REG-001-POSITIVE-01",
+      "requirementId": "PROVIDER-REG-001",
+      "sequence": 7,
+      "startMode": "base_url",
+      "dependsOn": [],
+      "type": "navigation",
+      "name": "Navigate to Provider Registration wizard.",
+      "criteria": "From the Healing Sky homepage, clicking 'Join Healing Sky' and selecting 'List as a Provider' opens the provider registration wizard.",
+      "priority": "high",
+      "preconditions": [
+        "Healing Sky homepage is loaded."
+      ],
+      "testData": {},
+      "startState": "Healing Sky homepage is loaded.",
+      "endState": "Provider registration wizard at /provider/register is displayed."
+    },
+    {
+      "id": "PROVIDER-REG-002-POSITIVE-01",
+      "requirementId": "PROVIDER-REG-002",
+      "sequence": 8,
+      "startMode": "continue",
+      "dependsOn": [
+        "PROVIDER-REG-001-POSITIVE-01"
+      ],
+      "type": "positive",
+      "name": "Fill Provider Wizard Step 1 - Personal Details.",
+      "criteria": "All fields in step 1 are populated successfully with their values retained, and the form proceeds to /provider/address.",
+      "priority": "high",
+      "preconditions": [
+        "Provider registration wizard at /provider/register is displayed."
+      ],
+      "testData": {
+        "fullName": "Cameron Palmer",
+        "email": "provider.cameron.palmer.mtcxfy50614@yopmail.com",
+        "phoneNumber": "+17027754476",
+        "dateOfBirth": {
+          "month": "March",
+          "date": "26",
+          "year": "1974"
+        },
+        "referral_code": "NAN5EM09"
+      },
+      "startState": "Provider registration wizard (Step 1: Personal Details) is displayed.",
+      "endState": "Provider registration wizard proceeds to /provider/address."
+    },
+    {
+      "id": "PROVIDER-REG-003-POSITIVE-01",
+      "requirementId": "PROVIDER-REG-003",
+      "sequence": 9,
+      "startMode": "continue",
+      "dependsOn": [
+        "PROVIDER-REG-002-POSITIVE-01"
+      ],
+      "type": "positive",
+      "name": "Fill Provider Wizard Step 2 - Address Details.",
+      "criteria": "The Address Lookup resolves and other fields like Country auto-fill correctly. The step passes if the form proceeds to /provider/location.",
+      "priority": "high",
+      "preconditions": [
+        "Provider registration wizard at /provider/address is displayed."
+      ],
+      "testData": {
+        "address": "350 5th Ave, New York, NY"
+      },
+      "startState": "Provider registration wizard (Step 2: Address) is displayed.",
+      "endState": "Provider registration wizard proceeds to /provider/location."
+    },
+    {
+      "id": "PROVIDER-REG-004-POSITIVE-01",
+      "requirementId": "PROVIDER-REG-004",
+      "sequence": 10,
+      "startMode": "continue",
+      "dependsOn": [
+        "PROVIDER-REG-003-POSITIVE-01"
+      ],
+      "type": "positive",
+      "name": "Fill Provider Wizard Step 3 - Provider and Listing Details.",
+      "criteria": "All fields in step 3 are filled successfully with their values retained, and the form proceeds to /provider/credential.",
+      "priority": "high",
+      "preconditions": [
+        "Provider registration wizard at /provider/location is displayed."
+      ],
+      "testData": {
+        "category": "Psychiatry",
+        "classification": "Individual Provider",
+        "subcategory": "Psychiatrists",
+        "npi_number": "1169732928"
+      },
+      "startState": "Provider registration wizard (Step 3: Provider and Listing Details) is displayed.",
+      "endState": "Provider registration wizard proceeds to /provider/credential."
+    },
+    {
+      "id": "PROVIDER-REG-005-POSITIVE-01",
+      "requirementId": "PROVIDER-REG-005",
+      "sequence": 11,
+      "startMode": "continue",
+      "dependsOn": [
+        "PROVIDER-REG-004-POSITIVE-01"
+      ],
+      "type": "positive",
+      "name": "Fill Provider Wizard Step 4 - License Status.",
+      "criteria": "The selected option is 'I am licensed', and the form proceeds to /provider/credentials.",
+      "priority": "high",
+      "preconditions": [
+        "Provider registration wizard at /provider/credential is displayed."
+      ],
+      "testData": {
+        "licenseOption": "i_am_licensed_my_license_information_is_below"
+      },
+      "startState": "Provider wizard step 4 (license status) is displayed.",
+      "endState": "Provider wizard proceeds to /provider/credentials."
+    },
+    {
+      "id": "PROVIDER-REG-006-POSITIVE-01",
+      "requirementId": "PROVIDER-REG-006",
+      "sequence": 12,
+      "startMode": "continue",
+      "dependsOn": [
+        "PROVIDER-REG-005-POSITIVE-01"
+      ],
+      "type": "positive",
+      "name": "Fill Provider Wizard Step 5 - License Details.",
+      "criteria": "License details are filled and validated. The step completes successfully once the wizard proceeds to /provider/billing.",
+      "priority": "high",
+      "preconditions": [
+        "Provider wizard license details page at /provider/credentials is displayed."
+      ],
+      "testData": {
+        "licenseNumber": "6788741",
+        "licenseState": "Kentucky",
+        "licenseExpDate": "11/2030"
+      },
+      "startState": "Provider wizard step 5 (license details) is displayed.",
+      "endState": "Provider wizard proceeds to /provider/billing."
+    },
+    {
+      "id": "PROVIDER-REG-007-POSITIVE-01",
+      "requirementId": "PROVIDER-REG-007",
+      "sequence": 13,
+      "startMode": "continue",
+      "dependsOn": [
+        "PROVIDER-REG-006-POSITIVE-01"
+      ],
+      "type": "positive",
+      "name": "Select Provider Wizard Step 6 - Plan Selection.",
+      "criteria": "The 'Standard Account' plan is selected and the wizard successfully navigates to the payment screen at /provider/card.",
+      "priority": "high",
+      "preconditions": [
+        "Provider wizard plan selection page at /provider/billing is displayed."
+      ],
+      "testData": {
+        "planType": "Standard Account"
+      },
+      "startState": "Provider wizard step 6 (plan selection) is displayed.",
+      "endState": "Provider wizard proceeds to /provider/card."
+    },
+    {
+      "id": "PROVIDER-REG-008-POSITIVE-01",
+      "requirementId": "PROVIDER-REG-008",
+      "sequence": 14,
+      "startMode": "continue",
+      "dependsOn": [
+        "PROVIDER-REG-007-POSITIVE-01"
+      ],
+      "type": "positive",
+      "name": "Complete Provider Wizard Step 7 - Payment.",
+      "criteria": "Payment is confirmed if a success or confirmation message is displayed or the application navigates to the provider dashboard, onboarding-complete, or thank-you page.",
+      "priority": "critical",
+      "preconditions": [
+        "Provider Payment page at /provider/card is displayed."
+      ],
+      "testData": {
+        "cardDetails": {
+          "name": "Cameron Palmer",
+          "cardNumber": "4242 4242 4242 4242",
+          "expiry": "11/29",
+          "cvc": "442"
+        }
+      },
+      "startState": "Provider wizard step 7 (payment page) is displayed.",
+      "endState": "Payment is successful and provider redirects to the appropriate page after payment."
     }
   ]
 }
