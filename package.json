@@ -1,10 +1,17 @@
 {
   "name": "llm-qa-agent",
   "version": "1.0.0",
-  "description": "An LLM-driven QA tester agent that explores a web app with Playwright and judges pass/fail against plain-English acceptance criteria using Claude.",
+  "description": "Dynamic multi-provider LLM client and QA agent framework supporting Anthropic, Azure OpenAI, OpenAI, and custom OpenAI-compatible models.",
   "type": "module",
+  "main": "llmclient.js",
+  "exports": {
+    ".": "./llmclient.js",
+    "./llmclient": "./llmclient.js",
+    "./config": "./config.js"
+  },
   "scripts": {
     "test": "node index.js",
+    "test:llm": "node LLM_connection_test/test-llm.js",
     "install-browsers": "npx playwright install chromium"
   },
   "dependencies": {

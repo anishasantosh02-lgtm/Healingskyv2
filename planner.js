@@ -19,74 +19,10 @@
 //
 
 import dotenv from "dotenv";
-import OpenAI from "openai";
+import { callLLM } from "./llmclient.js";
 
 dotenv.config();
 
-
-// ============================================================
-// Azure OpenAI configuration
-// ============================================================
-
-const endpoint =
-  process.env.AZURE_OPENAI_ENDPOINT;
-
-
-const apiKey =
-  process.env.AZURE_OPENAI_API_KEY;
-
-
-const deployment =
-  process.env.AZURE_OPENAI_DEPLOYMENT_NAME;
-
-
-const apiVersion =
-  process.env.AZURE_OPENAI_API_VERSION;
-
-
-if (
-  !endpoint ||
-  !apiKey ||
-  !deployment
-) {
-
-  throw new Error(
-    "Missing Azure OpenAI configuration. " +
-    "Check AZURE_OPENAI_ENDPOINT, " +
-    "AZURE_OPENAI_API_KEY and " +
-    "AZURE_OPENAI_DEPLOYMENT_NAME."
-  );
-}
-
-
-// ============================================================
-// Azure OpenAI client
-// ============================================================
-
-const client =
-  new OpenAI({
-
-    apiKey,
-
-    baseURL:
-      `${endpoint}/openai/deployments/${deployment}`,
-
-    defaultQuery: {
-
-      "api-version":
-        apiVersion,
-    },
-
-    defaultHeaders: {
-
-      "api-key":
-        apiKey,
-    },
-  });
-
-
-const MODEL =
-  deployment;
 
 
 // ============================================================
@@ -1297,53 +1233,28 @@ Important:
 
 
   // ==========================================================
-  // Azure OpenAI request
+  // LLM request
   // ==========================================================
 
-  const response =
-    await client.chat.completions.create({
-
-      model:
-        MODEL,
-
-      max_completion_tokens:
-        5500,
-
+  const { assistantMessage } =
+    await callLLM({
       messages,
-
       tools,
-
-      tool_choice: {
-
-        type:
-          "function",
-
+      toolChoice: {
+        type: "function",
         function: {
-
-          name:
-            "create_test_scenarios",
+          name: "create_test_scenarios",
         },
       },
+      maxTokens: 5500,
     });
-
-
-  // ==========================================================
-  // Read assistant response
-  // ==========================================================
-
-  const assistantMessage =
-    response
-      .choices
-      ?.[0]
-      ?.message;
-
 
   if (
     !assistantMessage
   ) {
 
     throw new Error(
-      "Azure OpenAI returned no planner response."
+      "LLM planner returned no response."
     );
   }
 

@@ -51,8 +51,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 import dotenv from "dotenv";
-import OpenAI from "openai";
-
+import { callLLM } from "./llmclient.js";
 
 dotenv.config();
 
@@ -64,75 +63,6 @@ dotenv.config();
 const AGENT_VERSION =
   "secure-radio-otp-startmode-v4";
 
-
-// ============================================================
-// Azure OpenAI configuration
-// ============================================================
-
-const endpoint =
-  process.env.AZURE_OPENAI_ENDPOINT;
-
-
-const apiKey =
-  process.env.AZURE_OPENAI_API_KEY;
-
-
-const deployment =
-  process.env.AZURE_OPENAI_DEPLOYMENT_NAME;
-
-
-const apiVersion =
-  process.env.AZURE_OPENAI_API_VERSION;
-
-
-if (
-  !endpoint ||
-  !apiKey ||
-  !deployment
-) {
-
-  throw new Error(
-    "Missing Azure OpenAI configuration. " +
-    "Check AZURE_OPENAI_ENDPOINT, " +
-    "AZURE_OPENAI_API_KEY and " +
-    "AZURE_OPENAI_DEPLOYMENT_NAME."
-  );
-}
-
-
-// ============================================================
-// Azure OpenAI client
-// ============================================================
-
-const client =
-  new OpenAI({
-
-    apiKey,
-
-    baseURL:
-      `${endpoint}/openai/deployments/${deployment}`,
-
-    defaultQuery: {
-
-      "api-version":
-        apiVersion,
-    },
-
-    defaultHeaders: {
-
-      "api-key":
-        apiKey,
-    },
-  });
-
-
-const MODEL =
-  deployment;
-
-
-// ============================================================
-// Agent limits
-// ============================================================
 
 const MAX_STEPS =
   12;
@@ -535,6 +465,10 @@ async function handleCookieConsent(
     /^Agree$/i,
     /I Agree/i,
     /Got It/i,
+    /Accept Cookies/i,
+    /^OK$/i,
+    /^Close$/i,
+    /^Dismiss$/i,
   ];
 
 
@@ -576,7 +510,7 @@ async function handleCookieConsent(
 
       await button.click({
         timeout:
-          8000,
+          5000,
       });
 
 
@@ -590,6 +524,21 @@ async function handleCookieConsent(
     } catch {
       // Try next candidate.
     }
+  }
+
+
+  try {
+    const genericButton = page
+      .locator("button:has-text('Accept'), button:has-text('Allow'), button:has-text('Agree'), [class*='cookie'] button, [id*='cookie'] button")
+      .first();
+
+    if ((await genericButton.count()) > 0 && (await genericButton.isVisible())) {
+      await genericButton.click({ timeout: 5000 });
+      await page.waitForTimeout(400);
+      return true;
+    }
+  } catch {
+    // Ignore
   }
 
 
@@ -646,6 +595,17 @@ async function prepareScenarioStart(
   // The navigation exists only to reset page/UI branch state.
   // ----------------------------------------------------------
 
+  // Clear cookies and storage when resetting to base_url so fresh public flows start unauthenticated
+  try {
+    await page.context().clearCookies();
+    await page.evaluate(() => {
+      try {
+        localStorage.clear();
+        sessionStorage.clear();
+      } catch {}
+    }).catch(() => {});
+  } catch {}
+
   await page.goto(
     baseUrl,
 
@@ -663,6 +623,7 @@ async function prepareScenarioStart(
     page
   );
 
+  await page.waitForTimeout(1500);
 
   await handleCookieConsent(
     page
@@ -1750,6 +1711,25 @@ async function clickElement(
 
 
   try {
+    const isOptionTag = await element.evaluate((el) => el.tagName.toLowerCase() === "option").catch(() => false);
+    if (isOptionTag) {
+      const optionInfo = await element.evaluate((el) => ({
+        val: el.value || el.textContent.trim(),
+        text: el.textContent.trim(),
+      }));
+      const parentSelect = await element.evaluateHandle((el) => el.closest("select"));
+      if (parentSelect && parentSelect.asElement()) {
+        await parentSelect.asElement().selectOption({ label: optionInfo.text }).catch(async () => {
+          await parentSelect.asElement().selectOption({ value: optionInfo.val });
+        });
+        await page.waitForTimeout(250);
+        return { clicked: true, via: "select_option" };
+      }
+    }
+  } catch {}
+
+
+  try {
 
     await element.click({
 
@@ -1982,6 +1962,20 @@ async function typeText(
 
 
   try {
+    const isSelectTag = await element.evaluate((el) => el.tagName.toLowerCase() === "select").catch(() => false);
+    if (isSelectTag) {
+      await element.selectOption({ label: String(resolvedText) }).catch(async () => {
+        await element.selectOption({ value: String(resolvedText) }).catch(async () => {
+          await element.selectOption(String(resolvedText));
+        });
+      });
+      await page.waitForTimeout(250);
+      return { ok: true, typed: true, value: "[REDACTED]" };
+    }
+  } catch {}
+
+
+  try {
 
     await element.fill(
       String(
@@ -2019,6 +2013,24 @@ async function typeText(
       }
     );
   }
+
+
+  // Automatic Google Places / Address Autocomplete suggestion picker
+  try {
+    const isAddressField = await element.evaluate((el) => {
+      const attr = (el.name + " " + el.id + " " + el.placeholder + " " + el.className).toLowerCase();
+      return attr.includes("address") || attr.includes("location");
+    }).catch(() => false);
+
+    if (isAddressField) {
+      await page.waitForTimeout(800);
+      const suggestion = page.locator(".pac-container .pac-item, [class*='pac-item'], [class*='suggestion-item'], [id*='typeahead'] li").first();
+      if ((await suggestion.count()) > 0 && (await suggestion.isVisible())) {
+        await suggestion.click({ timeout: 3000 }).catch(() => {});
+        await page.waitForTimeout(400);
+      }
+    }
+  } catch {}
 
 
   return {
@@ -3129,6 +3141,16 @@ If an agent_id becomes stale, inspect the page again.
 
 
 ============================================================
+COOKIE BANNERS & OVERLAYS
+============================================================
+
+If a Cookie Consent banner or modal overlay is present when inspecting page state:
+1. Accept or close the banner first if it obscures or overlaps navigation links or interactive controls.
+2. Do NOT fail a page loading test simply because a cookie banner overlay is present alongside the page content. If navigation controls exist or become accessible, judge the test pass/fail on the actual controls.
+
+
+
+============================================================
 INPUT PRIVACY
 ============================================================
 
@@ -3412,29 +3434,13 @@ Be concise and evidence-driven.
       stepIndex++
     ) {
 
-      const response =
-        await client.chat.completions.create({
-
-          model:
-            MODEL,
-
+      const { assistantMessage } =
+        await callLLM({
           messages,
-
           tools,
-
-          tool_choice:
-            "auto",
-
-          max_completion_tokens:
-            1800,
+          toolChoice: "auto",
+          maxTokens: 1800,
         });
-
-
-      const assistantMessage =
-        response
-          .choices
-          ?.[0]
-          ?.message;
 
 
       if (
@@ -3442,7 +3448,7 @@ Be concise and evidence-driven.
       ) {
 
         throw new Error(
-          "Azure OpenAI returned no assistant message."
+          "LLM agent returned no assistant message."
         );
       }
 

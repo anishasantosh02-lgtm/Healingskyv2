@@ -1,250 +1,206 @@
 [
   {
-    "name": "Load Healing Sky homepage and verify main navigation controls",
-    "criteria": "The Healing Sky homepage should load successfully and display the main navigation controls including Sign In and Join Healing Sky.",
-    "scenarioId": "CLIENT-001-POSITIVE-01",
-    "requirementId": "CLIENT-001",
+    "name": "Navigate to and open the client registration page",
+    "criteria": "Clicking Join Healing Sky and selecting Join as a Client successfully loads the client registration page.",
+    "scenarioId": "CLIENT-REG-001-POSITIVE-01",
+    "requirementId": "CLIENT-REG-001",
     "type": "navigation",
-    "priority": "critical",
+    "priority": "high",
     "sequence": 1,
     "startMode": "base_url",
     "dependsOn": [],
-    "startState": "Healing Sky homepage is not yet loaded.",
-    "endState": "Healing Sky homepage is loaded with main navigation controls Sign In and Join Healing Sky visible.",
+    "startState": "Healing Sky homepage is loaded.",
+    "endState": "Client registration page is displayed.",
     "sessionMode": "shared",
     "verdict": {
       "status": "pass",
-      "summary": "Healing Sky homepage successfully loaded with navigation controls visible.",
-      "expected": "Healing Sky homepage is loaded with main navigation controls Sign In and Join Healing Sky visible.",
-      "actual": "Healing Sky homepage is loaded, and the navigation controls Sign In and Join Healing Sky are visible and interactive.",
-      "severity": "critical"
+      "summary": "Successfully navigated to the client registration page by following the required interaction path.",
+      "expected": "Client registration page is displayed upon following sequence: Click Join Healing Sky → Select Join as a Client.",
+      "actual": "Client registration page loaded with proper elements such as full name, email, phone input boxes.",
+      "severity": "high"
     },
     "stepsTaken": [
       "prepare_start({\"startMode\":\"base_url\",\"target\":\"https://prod-turningwell.dreamstechnologies.com/\"})",
       "get_page_state({})",
-      "finish_test({\"status\":\"pass\",\"summary\":\"Healing Sky homepage successfully loaded with navigation controls visible.\",\"expected\":\"Healing Sky homepage is loaded with main navigation controls Sign In and Join Healing Sky visible.\",\"actual\":\"Healing Sky homepage is loaded, and the navigation controls Sign In and Join Healing Sky are visible and interactive.\",\"severity\":\"critical\"})"
+      "click({\"agent_id\":\"e3\"})",
+      "click({\"agent_id\":\"e13\"})",
+      "get_page_state({})",
+      "click({\"agent_id\":\"e10\"})",
+      "get_page_state({})",
+      "finish_test({\"status\":\"pass\",\"summary\":\"Successfully navigated to the client registration page by following the required interaction path.\",\"expected\":\"Client registration page is displayed upon following sequence: Click Join Healing Sky → Select Join as a Client.\",\"actual\":\"Client registration page loaded with proper elements such as full name, email, phone input boxes.\",\"severity\":\"high\"})"
     ],
     "consoleErrors": [],
     "screenshotPath": null,
-    "finalUrl": "https://prod-turningwell.dreamstechnologies.com/"
+    "finalUrl": "https://prod-turningwell.dreamstechnologies.com/client/register"
   },
   {
-    "name": "Open Sign In menu on homepage",
-    "criteria": "Clicking Sign In opens the Sign In menu and displays both the I'm a Client and I'm a Provider options.",
-    "scenarioId": "SIGNIN-001-POSITIVE-01",
-    "requirementId": "SIGNIN-001",
-    "type": "navigation",
+    "name": "Fill out and submit the client registration form",
+    "criteria": "Submitting the client registration form with valid details displays a success or confirmation message.",
+    "scenarioId": "CLIENT-REG-002-POSITIVE-01",
+    "requirementId": "CLIENT-REG-002",
+    "type": "positive",
     "priority": "high",
     "sequence": 2,
     "startMode": "continue",
     "dependsOn": [
-      "CLIENT-001-POSITIVE-01"
+      "CLIENT-REG-001-POSITIVE-01"
     ],
-    "startState": "Healing Sky homepage is loaded.",
-    "endState": "Sign In menu is open and displays I'm a Client and I'm a Provider options.",
+    "startState": "Client registration page is displayed.",
+    "endState": "Registration confirmation is shown or user is redirected to a success page.",
     "sessionMode": "shared",
     "verdict": {
-      "status": "pass",
-      "summary": "Clicking Sign In successfully opened the menu displaying 'I'm a Client' and 'I'm a Provider' options.",
-      "expected": "Sign In menu opens and displays 'I'm a Client' and 'I'm a Provider' options.",
-      "actual": "Sign In menu is open and displays 'I'm a Client' and 'I'm a Provider' options.",
+      "status": "fail",
+      "summary": "The registration submission returned validation errors instead of a success message or confirmation page.",
+      "expected": "Valid form submission should display a success or confirmation message.",
+      "actual": "Validation errors were highlighted for required or invalid inputs.",
       "severity": "high"
     },
     "stepsTaken": [
       "prepare_start({\"startMode\":\"continue\",\"target\":\"current_page\"})",
       "get_page_state({})",
-      "click({\"agent_id\":\"e8\"})",
+      "type_text({\"agent_id\":\"e4\",\"text\":\"[REDACTED]\"})",
+      "type_text({\"agent_id\":\"e5\",\"credential_key\":\"clientEmail\"})",
+      "type_text({\"agent_id\":\"e6\",\"text\":\"[REDACTED]\"})",
+      "click({\"agent_id\":\"e10\"})",
+      "click({\"agent_id\":\"e12\"})",
+      "click({\"agent_id\":\"e14\"})",
+      "type_text({\"agent_id\":\"e18\",\"text\":\"[REDACTED]\"})",
+      "click({\"agent_id\":\"e20\"})",
       "get_page_state({})",
-      "finish_test({\"status\":\"pass\",\"summary\":\"Clicking Sign In successfully opened the menu displaying 'I'm a Client' and 'I'm a Provider' options.\",\"expected\":\"Sign In menu opens and displays 'I'm a Client' and 'I'm a Provider' options.\",\"actual\":\"Sign In menu is open and displays 'I'm a Client' and 'I'm a Provider' options.\",\"severity\":\"high\"})"
+      "finish_test({\"status\":\"fail\",\"summary\":\"The registration submission returned validation errors instead of a success message or confirmation page.\",\"expected\":\"Valid form submission should display a success or confirmation message.\",\"actual\":\"Validation errors were highlighted for required or invalid inputs.\",\"severity\":\"high\"})"
     ],
-    "consoleErrors": [],
-    "screenshotPath": null,
-    "finalUrl": "https://prod-turningwell.dreamstechnologies.com/"
+    "consoleErrors": [
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')",
+      "Cannot read properties of undefined (reading 'hideOverlaysOnDocumentScrolling')"
+    ],
+    "screenshotPath": "report\\screenshots\\client_reg_002_positive_01.png",
+    "finalUrl": "https://prod-turningwell.dreamstechnologies.com/client/register"
   },
   {
-    "name": "Open client sign-in page",
-    "criteria": "With the Sign In menu open, selecting I'm a Client opens the client sign-in page or client authentication interface.",
-    "scenarioId": "SIGNIN-002-POSITIVE-01",
-    "requirementId": "SIGNIN-002",
-    "type": "navigation",
+    "name": "Navigate to client sign-in page and initiate login with Email OTP",
+    "criteria": "Using the configured client email and selecting Email as OTP delivery method displays the OTP verification screen.",
+    "scenarioId": "CLIENT-AUTH-001-POSITIVE-01",
+    "requirementId": "CLIENT-AUTH-001",
+    "type": "positive",
     "priority": "high",
     "sequence": 3,
-    "startMode": "continue",
-    "dependsOn": [
-      "SIGNIN-001-POSITIVE-01"
-    ],
-    "startState": "Sign In menu is open.",
-    "endState": "Client sign-in page is open.",
+    "startMode": "base_url",
+    "dependsOn": [],
+    "startState": "Healing Sky homepage is loaded.",
+    "endState": "Client OTP verification screen is displayed.",
     "sessionMode": "shared",
     "verdict": {
       "status": "pass",
-      "summary": "The I'm a Client option was selected from the Sign In menu, successfully opening the client sign-in page.",
-      "expected": "Selecting I'm a Client opens the client sign-in page or authentication interface.",
-      "actual": "The client sign-in page interface was observed after selecting I'm a Client.",
-      "severity": "critical"
+      "summary": "Client OTP verification screen is displayed after initiating login with Email OTP.",
+      "expected": "Client OTP verification screen is displayed.",
+      "actual": "Client OTP verification screen is displayed with 4 OTP fields visible.",
+      "severity": "high"
     },
     "stepsTaken": [
-      "prepare_start({\"startMode\":\"continue\",\"target\":\"current_page\"})",
+      "prepare_start({\"startMode\":\"base_url\",\"target\":\"https://prod-turningwell.dreamstechnologies.com/\"})",
+      "get_page_state({})",
+      "click({\"agent_id\":\"e8\"})",
       "get_page_state({})",
       "click({\"agent_id\":\"e9\"})",
       "get_page_state({})",
-      "finish_test({\"status\":\"pass\",\"summary\":\"The I'm a Client option was selected from the Sign In menu, successfully opening the client sign-in page.\",\"expected\":\"Selecting I'm a Client opens the client sign-in page or authentication interface.\",\"actual\":\"The client sign-in page interface was observed after selecting I'm a Client.\",\"severity\":\"critical\"})"
+      "type_text({\"agent_id\":\"e4\",\"credential_key\":\"clientEmail\"})",
+      "click({\"agent_id\":\"e5\"})",
+      "click({\"agent_id\":\"e9\"})",
+      "get_page_state({})",
+      "finish_test({\"status\":\"pass\",\"summary\":\"Client OTP verification screen is displayed after initiating login with Email OTP.\",\"expected\":\"Client OTP verification screen is displayed.\",\"actual\":\"Client OTP verification screen is displayed with 4 OTP fields visible.\",\"severity\":\"high\"})"
     ],
     "consoleErrors": [
+      "Failed to load resource: the server responded with a status of 404 ()",
       "Failed to load resource: the server responded with a status of 404 ()"
     ],
     "screenshotPath": null,
-    "finalUrl": "https://prod-turningwell.dreamstechnologies.com/client/login"
+    "finalUrl": "https://prod-turningwell.dreamstechnologies.com/client/verify-account"
   },
   {
-    "name": "Verify client sign-in page controls",
-    "criteria": "The client sign-in page should display the Client Login heading, Email field, OTP delivery options for Email and SMS, and the Log in button.",
-    "scenarioId": "CLIENT-LOGIN-001-POSITIVE-01",
-    "requirementId": "CLIENT-LOGIN-001",
-    "type": "ui",
+    "name": "Enter OTP and access the authenticated client dashboard",
+    "criteria": "Entering the configured OTP and clicking Verify successfully navigates to the authenticated client dashboard.",
+    "scenarioId": "CLIENT-AUTH-002-POSITIVE-01",
+    "requirementId": "CLIENT-AUTH-002",
+    "type": "positive",
     "priority": "critical",
     "sequence": 4,
     "startMode": "continue",
     "dependsOn": [
-      "SIGNIN-002-POSITIVE-01"
+      "CLIENT-AUTH-001-POSITIVE-01"
     ],
-    "startState": "Client sign-in page is open.",
-    "endState": "Client sign-in page UI elements are verified.",
+    "startState": "Client OTP verification screen is displayed.",
+    "endState": "Authenticated client dashboard is displayed (/client/dashboard).",
     "sessionMode": "shared",
     "verdict": {
       "status": "pass",
-      "summary": "The client sign-in page displayed all required UI elements per the acceptance criteria.",
-      "expected": "The client sign-in page should display the Client Login heading, Email field, OTP delivery options for Email and SMS, and the Log in button.",
-      "actual": "The page displayed the heading 'Client Login', an Email field, options for OTP delivery via Email and SMS, and a Log in button.",
-      "severity": "critical"
-    },
-    "stepsTaken": [
-      "prepare_start({\"startMode\":\"continue\",\"target\":\"current_page\"})",
-      "get_page_state({})",
-      "finish_test({\"status\":\"pass\",\"summary\":\"The client sign-in page displayed all required UI elements per the acceptance criteria.\",\"expected\":\"The client sign-in page should display the Client Login heading, Email field, OTP delivery options for Email and SMS, and the Log in button.\",\"actual\":\"The page displayed the heading 'Client Login', an Email field, options for OTP delivery via Email and SMS, and a Log in button.\",\"severity\":\"critical\"})"
-    ],
-    "consoleErrors": [],
-    "screenshotPath": null,
-    "finalUrl": "https://prod-turningwell.dreamstechnologies.com/client/login"
-  },
-  {
-    "name": "Select Email as OTP delivery method",
-    "criteria": "The user can select Email as the OTP delivery method on the client sign-in page.",
-    "scenarioId": "CLIENT-LOGIN-002-POSITIVE-01",
-    "requirementId": "CLIENT-LOGIN-002",
-    "type": "ui",
-    "priority": "medium",
-    "sequence": 5,
-    "startMode": "continue",
-    "dependsOn": [
-      "CLIENT-LOGIN-001-POSITIVE-01"
-    ],
-    "startState": "Client sign-in page is open with OTP delivery options visible.",
-    "endState": "Email is selected as the OTP delivery method.",
-    "sessionMode": "shared",
-    "verdict": {
-      "status": "pass",
-      "summary": "Email is already selected as the OTP delivery method without further interaction.",
-      "expected": "Email is selected as the OTP delivery method.",
-      "actual": "Email's radio button is linkedControlChecked=true and checked=true in the current state.",
-      "severity": "low"
-    },
-    "stepsTaken": [
-      "prepare_start({\"startMode\":\"continue\",\"target\":\"current_page\"})",
-      "get_page_state({})",
-      "finish_test({\"status\":\"pass\",\"summary\":\"Email is already selected as the OTP delivery method without further interaction.\",\"expected\":\"Email is selected as the OTP delivery method.\",\"actual\":\"Email's radio button is linkedControlChecked=true and checked=true in the current state.\",\"severity\":\"low\"})"
-    ],
-    "consoleErrors": [],
-    "screenshotPath": null,
-    "finalUrl": "https://prod-turningwell.dreamstechnologies.com/client/login"
-  },
-  {
-    "name": "Log in with Email OTP",
-    "criteria": "Using the configured valid client test email, selecting Email as the OTP delivery method, and clicking Log in opens the client OTP verification screen.",
-    "scenarioId": "CLIENT-LOGIN-003-POSITIVE-01",
-    "requirementId": "CLIENT-LOGIN-003",
-    "type": "positive",
-    "priority": "critical",
-    "sequence": 6,
-    "startMode": "continue",
-    "dependsOn": [
-      "CLIENT-LOGIN-002-POSITIVE-01"
-    ],
-    "startState": "Client sign-in page is open with Email as OTP delivery method.",
-    "endState": "Client OTP verification screen is open.",
-    "sessionMode": "shared",
-    "verdict": {
-      "status": "pass",
-      "summary": "Clicking Login with Email after entering a valid email navigated to the client OTP verification screen.",
-      "expected": "Client OTP verification screen should open after clicking Log in with Email as OTP delivery method using a valid email.",
-      "actual": "Client OTP verification screen opened successfully as expected.",
-      "severity": "critical"
-    },
-    "stepsTaken": [
-      "prepare_start({\"startMode\":\"continue\",\"target\":\"current_page\"})",
-      "get_page_state({})",
-      "type_text({\"agent_id\":\"e4\",\"credential_key\":\"clientEmail\"})",
-      "click({\"agent_id\":\"e9\"})",
-      "get_page_state({})",
-      "finish_test({\"status\":\"pass\",\"summary\":\"Clicking Login with Email after entering a valid email navigated to the client OTP verification screen.\",\"expected\":\"Client OTP verification screen should open after clicking Log in with Email as OTP delivery method using a valid email.\",\"actual\":\"Client OTP verification screen opened successfully as expected.\",\"severity\":\"critical\"})"
-    ],
-    "consoleErrors": [
-      "Failed to load resource: the server responded with a status of 404 ()"
-    ],
-    "screenshotPath": null,
-    "finalUrl": "https://prod-turningwell.dreamstechnologies.com/client/verify-account"
-  },
-  {
-    "name": "Verify client OTP verification screen controls",
-    "criteria": "The client OTP verification screen should display the Enter Verification Code heading, OTP entry fields, resend code control or countdown, Verify button, and Back control.",
-    "scenarioId": "CLIENT-LOGIN-004-POSITIVE-01",
-    "requirementId": "CLIENT-LOGIN-004",
-    "type": "ui",
-    "priority": "high",
-    "sequence": 7,
-    "startMode": "continue",
-    "dependsOn": [
-      "CLIENT-LOGIN-003-POSITIVE-01"
-    ],
-    "startState": "Client OTP verification screen is open.",
-    "endState": "Client OTP verification screen UI elements are verified.",
-    "sessionMode": "shared",
-    "verdict": {
-      "status": "pass",
-      "summary": "All required UI elements for the Client OTP verification screen are present and verified.",
-      "expected": "The client OTP verification screen should display the Enter Verification Code heading, OTP entry fields, resend code control or countdown, Verify button, and Back control.",
-      "actual": "The page contains the Enter Verification Code heading, 4 OTP input fields, Resend Code control with a countdown, Verify button, and Back text (implicit in UI).",
-      "severity": "high"
-    },
-    "stepsTaken": [
-      "prepare_start({\"startMode\":\"continue\",\"target\":\"current_page\"})",
-      "get_page_state({})",
-      "finish_test({\"status\":\"pass\",\"summary\":\"All required UI elements for the Client OTP verification screen are present and verified.\",\"expected\":\"The client OTP verification screen should display the Enter Verification Code heading, OTP entry fields, resend code control or countdown, Verify button, and Back control.\",\"actual\":\"The page contains the Enter Verification Code heading, 4 OTP input fields, Resend Code control with a countdown, Verify button, and Back text (implicit in UI).\",\"severity\":\"high\"})"
-    ],
-    "consoleErrors": [],
-    "screenshotPath": null,
-    "finalUrl": "https://prod-turningwell.dreamstechnologies.com/client/verify-account"
-  },
-  {
-    "name": "Authenticate using OTP bypass",
-    "criteria": "Entering the configured client test OTP bypass value into the OTP verification fields and clicking Verify successfully authenticates the client and opens the authenticated client dashboard.",
-    "scenarioId": "CLIENT-LOGIN-005-POSITIVE-01",
-    "requirementId": "CLIENT-LOGIN-005",
-    "type": "positive",
-    "priority": "critical",
-    "sequence": 8,
-    "startMode": "continue",
-    "dependsOn": [
-      "CLIENT-LOGIN-004-POSITIVE-01"
-    ],
-    "startState": "Client OTP verification screen is open.",
-    "endState": "Authenticated client dashboard is open.",
-    "sessionMode": "shared",
-    "verdict": {
-      "status": "pass",
-      "summary": "The OTP verification was completed successfully, and the client dashboard opened as expected.",
-      "expected": "Authenticated client dashboard opens after entering OTP bypass values and clicking Verify.",
-      "actual": "Following OTP entry and verification, the browser navigated to the authenticated client dashboard.",
+      "summary": "The OTP was successfully entered, and the user was navigated to the authenticated client dashboard at /client/dashboard.",
+      "expected": "Authenticated client dashboard is displayed (/client/dashboard) after entering OTP and clicking Verify.",
+      "actual": "Authenticated client dashboard was displayed at /client/dashboard after successful OTP verification.",
       "severity": "critical"
     },
     "stepsTaken": [
@@ -253,278 +209,43 @@
       "type_otp({\"agent_ids\":[\"e2\",\"e3\",\"e4\",\"e5\"],\"credential_key\":\"clientOtp\"})",
       "click({\"agent_id\":\"e7\"})",
       "get_page_state({})",
-      "finish_test({\"status\":\"pass\",\"summary\":\"The OTP verification was completed successfully, and the client dashboard opened as expected.\",\"expected\":\"Authenticated client dashboard opens after entering OTP bypass values and clicking Verify.\",\"actual\":\"Following OTP entry and verification, the browser navigated to the authenticated client dashboard.\",\"severity\":\"critical\"})"
+      "finish_test({\"status\":\"pass\",\"summary\":\"The OTP was successfully entered, and the user was navigated to the authenticated client dashboard at /client/dashboard.\",\"expected\":\"Authenticated client dashboard is displayed (/client/dashboard) after entering OTP and clicking Verify.\",\"actual\":\"Authenticated client dashboard was displayed at /client/dashboard after successful OTP verification.\",\"severity\":\"critical\"})"
     ],
     "consoleErrors": [],
     "screenshotPath": null,
     "finalUrl": "https://prod-turningwell.dreamstechnologies.com/client/dashboard"
   },
   {
-    "name": "Log out from authenticated client dashboard",
-    "criteria": "After successful client authentication, the user can log out successfully and return to the public or client sign-in interface.",
-    "scenarioId": "CLIENT-LOGIN-006-POSITIVE-01",
-    "requirementId": "CLIENT-LOGIN-006",
+    "name": "Log out from the authenticated client dashboard",
+    "criteria": "Clicking Log Out from the authenticated client dashboard successfully logs out the user and navigates to the Healing Sky homepage.",
+    "scenarioId": "CLIENT-AUTH-003-POSITIVE-01",
+    "requirementId": "CLIENT-AUTH-003",
     "type": "positive",
-    "priority": "high",
-    "sequence": 9,
+    "priority": "medium",
+    "sequence": 5,
     "startMode": "continue",
     "dependsOn": [
-      "CLIENT-LOGIN-005-POSITIVE-01"
+      "CLIENT-AUTH-002-POSITIVE-01"
     ],
-    "startState": "Authenticated client dashboard is open.",
-    "endState": "User is logged out and returned to the public or client sign-in interface.",
+    "startState": "Authenticated client dashboard is displayed (/client/dashboard).",
+    "endState": "Healing Sky homepage is displayed.",
     "sessionMode": "shared",
     "verdict": {
-      "status": "blocked",
-      "summary": "Scenario requires logout functionality, but only unrelated dropdown behavior was verified.",
-      "expected": "User should successfully log out and observe public or client sign-in page.",
-      "actual": "Dropdown for language selection was interacted with, but true logout functionality remains unconfirmed.",
-      "severity": "high"
+      "status": "pass",
+      "summary": "Log out action successfully logged out the user and displayed the Healing Sky homepage.",
+      "expected": "Healing Sky homepage is displayed after log out action.",
+      "actual": "Healing Sky homepage was displayed after clicking Log Out option on the authenticated client dashboard.",
+      "severity": "medium"
     },
     "stepsTaken": [
       "prepare_start({\"startMode\":\"continue\",\"target\":\"current_page\"})",
       "get_page_state({})",
+      "click({\"agent_id\":\"e2\"})",
       "get_page_state({})",
-      "get_page_state({})",
-      "click({\"agent_id\":\"e6\"})",
-      "get_page_state({})",
-      "finish_test({\"status\":\"blocked\",\"summary\":\"Scenario requires logout functionality, but only unrelated dropdown behavior was verified.\",\"expected\":\"User should successfully log out and observe public or client sign-in page.\",\"actual\":\"Dropdown for language selection was interacted with, but true logout functionality remains unconfirmed.\",\"severity\":\"high\"})"
+      "finish_test({\"status\":\"pass\",\"summary\":\"Log out action successfully logged out the user and displayed the Healing Sky homepage.\",\"expected\":\"Healing Sky homepage is displayed after log out action.\",\"actual\":\"Healing Sky homepage was displayed after clicking Log Out option on the authenticated client dashboard.\",\"severity\":\"medium\"})"
     ],
     "consoleErrors": [],
-    "screenshotPath": "report\\screenshots\\client_login_006_positive_01.png",
-    "finalUrl": "https://prod-turningwell.dreamstechnologies.com/client/dashboard"
-  },
-  {
-    "name": "Open provider sign-in page from Sign In menu",
-    "criteria": "From the Healing Sky homepage, opening the Sign In menu and selecting I'm a Provider opens the provider sign-in page or provider authentication interface.",
-    "scenarioId": "SIGNIN-003-POSITIVE-01",
-    "requirementId": "SIGNIN-003",
-    "type": "navigation",
-    "priority": "high",
-    "sequence": 10,
-    "startMode": "base_url",
-    "dependsOn": [],
-    "startState": "Healing Sky homepage is loaded.",
-    "endState": "Provider sign-in page is open.",
-    "sessionMode": "shared",
-    "verdict": {
-      "status": "fail",
-      "summary": "The test navigated to the My Dashboard page instead of opening the Sign In menu or proceeding to the provider sign-in page.",
-      "expected": "Opening the Sign In menu and selecting 'I'm a Provider' should open the provider sign-in page or provider authentication interface.",
-      "actual": "After clicking Sign In, the browser navigated to the My Dashboard page.",
-      "severity": "high"
-    },
-    "stepsTaken": [
-      "prepare_start({\"startMode\":\"base_url\",\"target\":\"https://prod-turningwell.dreamstechnologies.com/\"})",
-      "get_page_state({})",
-      "click({\"agent_id\":\"e68\"})",
-      "get_page_state({})",
-      "finish_test({\"status\":\"fail\",\"summary\":\"The test navigated to the My Dashboard page instead of opening the Sign In menu or proceeding to the provider sign-in page.\",\"expected\":\"Opening the Sign In menu and selecting 'I'm a Provider' should open the provider sign-in page or provider authentication interface.\",\"actual\":\"After clicking Sign In, the browser navigated to the My Dashboard page.\",\"severity\":\"high\"})"
-    ],
-    "consoleErrors": [],
-    "screenshotPath": "report\\screenshots\\signin_003_positive_01.png",
-    "finalUrl": "https://prod-turningwell.dreamstechnologies.com/client/dashboard"
-  },
-  {
-    "name": "Open Join Healing Sky options from navigation",
-    "criteria": "From the Healing Sky homepage, clicking Join Healing Sky in the main navigation opens the joining options and displays the Join as a Client option.",
-    "scenarioId": "CLIENT-002-POSITIVE-01",
-    "requirementId": "CLIENT-002",
-    "type": "navigation",
-    "priority": "high",
-    "sequence": 11,
-    "startMode": "base_url",
-    "dependsOn": [],
-    "startState": "Healing Sky homepage is loaded.",
-    "endState": "Join Healing Sky options are open.",
-    "sessionMode": "shared",
-    "verdict": {
-      "status": "fail",
-      "summary": "Clicking 'Join Healing Sky' directed to the client dashboard instead of the expected joining options.",
-      "expected": "Clicking 'Join Healing Sky' should present joining options and display the 'Join as a Client' option.",
-      "actual": "Redirected to the client dashboard with unrelated features and options.",
-      "severity": "high"
-    },
-    "stepsTaken": [
-      "prepare_start({\"startMode\":\"base_url\",\"target\":\"https://prod-turningwell.dreamstechnologies.com/\"})",
-      "get_page_state({})",
-      "click({\"agent_id\":\"e69\"})",
-      "get_page_state({})",
-      "finish_test({\"status\":\"fail\",\"summary\":\"Clicking 'Join Healing Sky' directed to the client dashboard instead of the expected joining options.\",\"expected\":\"Clicking 'Join Healing Sky' should present joining options and display the 'Join as a Client' option.\",\"actual\":\"Redirected to the client dashboard with unrelated features and options.\",\"severity\":\"high\"})"
-    ],
-    "consoleErrors": [],
-    "screenshotPath": "report\\screenshots\\client_002_positive_01.png",
-    "finalUrl": "https://prod-turningwell.dreamstechnologies.com/client/dashboard"
-  },
-  {
-    "name": "Open client registration page from Join Healing Sky options",
-    "criteria": "With the Join Healing Sky options open, selecting Join as a Client opens the client registration page or client registration interface.",
-    "scenarioId": "CLIENT-003-POSITIVE-01",
-    "requirementId": "CLIENT-003",
-    "type": "navigation",
-    "priority": "high",
-    "sequence": 12,
-    "startMode": "continue",
-    "dependsOn": [
-      "CLIENT-002-POSITIVE-01"
-    ],
-    "startState": "Join Healing Sky options are open.",
-    "endState": "Client registration page is open.",
-    "verdict": {
-      "status": "blocked",
-      "summary": "A required workflow dependency did not pass, so this continuation scenario was not executed.",
-      "expected": "With the Join Healing Sky options open, selecting Join as a Client opens the client registration page or client registration interface.",
-      "actual": "Required dependencies were not satisfied: CLIENT-002-POSITIVE-01=fail.",
-      "severity": "high"
-    },
-    "stepsTaken": [
-      "dependency_check({\"failedDependencies\":[{\"id\":\"CLIENT-002-POSITIVE-01\",\"status\":\"fail\"}]})"
-    ],
-    "consoleErrors": [],
-    "screenshotPath": "report\\screenshots\\client_003_positive_01_dependency_blocked.png",
-    "finalUrl": "https://prod-turningwell.dreamstechnologies.com/client/dashboard"
-  },
-  {
-    "name": "Verify client registration interface",
-    "criteria": "The client registration interface should display the information fields and controls required to begin client registration.",
-    "scenarioId": "CLIENT-004-POSITIVE-01",
-    "requirementId": "CLIENT-004",
-    "type": "ui",
-    "priority": "high",
-    "sequence": 13,
-    "startMode": "continue",
-    "dependsOn": [
-      "CLIENT-003-POSITIVE-01"
-    ],
-    "startState": "Client registration page is open.",
-    "endState": "Client registration interface fields and controls are verified.",
-    "verdict": {
-      "status": "blocked",
-      "summary": "A required workflow dependency did not pass, so this continuation scenario was not executed.",
-      "expected": "The client registration interface should display the information fields and controls required to begin client registration.",
-      "actual": "Required dependencies were not satisfied: CLIENT-003-POSITIVE-01=blocked.",
-      "severity": "high"
-    },
-    "stepsTaken": [
-      "dependency_check({\"failedDependencies\":[{\"id\":\"CLIENT-003-POSITIVE-01\",\"status\":\"blocked\"}]})"
-    ],
-    "consoleErrors": [],
-    "screenshotPath": "report\\screenshots\\client_004_positive_01_dependency_blocked.png",
-    "finalUrl": "https://prod-turningwell.dreamstechnologies.com/client/dashboard"
-  },
-  {
-    "name": "Begin client registration process",
-    "criteria": "The client registration interface provides a clear action such as Continue, Next, Register, or Submit to proceed with registration.",
-    "scenarioId": "CLIENT-005-POSITIVE-01",
-    "requirementId": "CLIENT-005",
-    "type": "positive",
-    "priority": "medium",
-    "sequence": 14,
-    "startMode": "continue",
-    "dependsOn": [
-      "CLIENT-004-POSITIVE-01"
-    ],
-    "startState": "Client registration page is open with fields and controls verified.",
-    "endState": "Registration action is initiated.",
-    "verdict": {
-      "status": "blocked",
-      "summary": "A required workflow dependency did not pass, so this continuation scenario was not executed.",
-      "expected": "The client registration interface provides a clear action such as Continue, Next, Register, or Submit to proceed with registration.",
-      "actual": "Required dependencies were not satisfied: CLIENT-004-POSITIVE-01=blocked.",
-      "severity": "high"
-    },
-    "stepsTaken": [
-      "dependency_check({\"failedDependencies\":[{\"id\":\"CLIENT-004-POSITIVE-01\",\"status\":\"blocked\"}]})"
-    ],
-    "consoleErrors": [],
-    "screenshotPath": "report\\screenshots\\client_005_positive_01_dependency_blocked.png",
-    "finalUrl": "https://prod-turningwell.dreamstechnologies.com/client/dashboard"
-  },
-  {
-    "name": "Open Join Healing Sky options from homepage hero",
-    "criteria": "From the Healing Sky homepage, clicking the Join Healing Sky call-to-action in the homepage hero section opens the joining options.",
-    "scenarioId": "CLIENT-006-POSITIVE-01",
-    "requirementId": "CLIENT-006",
-    "type": "navigation",
-    "priority": "high",
-    "sequence": 15,
-    "startMode": "base_url",
-    "dependsOn": [],
-    "startState": "Healing Sky homepage is loaded.",
-    "endState": "Join Healing Sky options are open from the homepage hero.",
-    "sessionMode": "shared",
-    "verdict": {
-      "status": "fail",
-      "summary": "Clicking 'Join Healing Sky' led to the dashboard instead of the expected joining options.",
-      "expected": "Clicking 'Join Healing Sky' should open the joining options from the homepage hero.",
-      "actual": "Clicking 'Join Healing Sky' redirected to a dashboard page instead.",
-      "severity": "high"
-    },
-    "stepsTaken": [
-      "prepare_start({\"startMode\":\"base_url\",\"target\":\"https://prod-turningwell.dreamstechnologies.com/\"})",
-      "get_page_state({})",
-      "click({\"agent_id\":\"e69\"})",
-      "get_page_state({})",
-      "finish_test({\"status\":\"fail\",\"summary\":\"Clicking 'Join Healing Sky' led to the dashboard instead of the expected joining options.\",\"expected\":\"Clicking 'Join Healing Sky' should open the joining options from the homepage hero.\",\"actual\":\"Clicking 'Join Healing Sky' redirected to a dashboard page instead.\",\"severity\":\"high\"})"
-    ],
-    "consoleErrors": [],
-    "screenshotPath": "report\\screenshots\\client_006_positive_01.png",
-    "finalUrl": "https://prod-turningwell.dreamstechnologies.com/client/dashboard"
-  },
-  {
-    "name": "Verify Join as a Client option in hero CTA",
-    "criteria": "With the joining options opened from the homepage hero section, the Join as a Client option is displayed.",
-    "scenarioId": "CLIENT-007-POSITIVE-01",
-    "requirementId": "CLIENT-007",
-    "type": "ui",
-    "priority": "medium",
-    "sequence": 16,
-    "startMode": "continue",
-    "dependsOn": [
-      "CLIENT-006-POSITIVE-01"
-    ],
-    "startState": "Join Healing Sky options are open from the homepage hero.",
-    "endState": "Join as a Client option is displayed in the hero CTA.",
-    "verdict": {
-      "status": "blocked",
-      "summary": "A required workflow dependency did not pass, so this continuation scenario was not executed.",
-      "expected": "With the joining options opened from the homepage hero section, the Join as a Client option is displayed.",
-      "actual": "Required dependencies were not satisfied: CLIENT-006-POSITIVE-01=fail.",
-      "severity": "high"
-    },
-    "stepsTaken": [
-      "dependency_check({\"failedDependencies\":[{\"id\":\"CLIENT-006-POSITIVE-01\",\"status\":\"fail\"}]})"
-    ],
-    "consoleErrors": [],
-    "screenshotPath": "report\\screenshots\\client_007_positive_01_dependency_blocked.png",
-    "finalUrl": "https://prod-turningwell.dreamstechnologies.com/client/dashboard"
-  },
-  {
-    "name": "Open client registration page from homepage hero options",
-    "criteria": "With the homepage hero joining options open, selecting Join as a Client opens the client registration page or client registration interface.",
-    "scenarioId": "CLIENT-008-POSITIVE-01",
-    "requirementId": "CLIENT-008",
-    "type": "navigation",
-    "priority": "high",
-    "sequence": 17,
-    "startMode": "continue",
-    "dependsOn": [
-      "CLIENT-007-POSITIVE-01"
-    ],
-    "startState": "Join Healing Sky options are open from the homepage hero.",
-    "endState": "Client registration page is open.",
-    "verdict": {
-      "status": "blocked",
-      "summary": "A required workflow dependency did not pass, so this continuation scenario was not executed.",
-      "expected": "With the homepage hero joining options open, selecting Join as a Client opens the client registration page or client registration interface.",
-      "actual": "Required dependencies were not satisfied: CLIENT-007-POSITIVE-01=blocked.",
-      "severity": "high"
-    },
-    "stepsTaken": [
-      "dependency_check({\"failedDependencies\":[{\"id\":\"CLIENT-007-POSITIVE-01\",\"status\":\"blocked\"}]})"
-    ],
-    "consoleErrors": [],
-    "screenshotPath": "report\\screenshots\\client_008_positive_01_dependency_blocked.png",
-    "finalUrl": "https://prod-turningwell.dreamstechnologies.com/client/dashboard"
+    "screenshotPath": null,
+    "finalUrl": "https://prod-turningwell.dreamstechnologies.com/"
   }
 ]
