@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-28T07:07:11.750Z",
+  "generatedAt": "2026-08-28T09:19:05.235Z",
   "runnerVersion": "startMode-dependency-credentials-v3",
   "baseUrl": "https://prod-turningwell.dreamstechnologies.com/",
   "scenarios": [
@@ -9,12 +9,12 @@
       "sequence": 1,
       "startMode": "base_url",
       "dependsOn": [],
-      "type": "navigation",
-      "name": "Navigate to client registration page",
-      "criteria": "Clicking 'Join Healing Sky' and selecting 'Join as a Client' opens the client registration page.",
+      "type": "positive",
+      "name": "Open Join as a Client registration page",
+      "criteria": "Clicking Join Healing Sky in the main navigation and selecting Join as a Client navigates to the client registration page.",
       "priority": "high",
       "preconditions": [
-        "Healing Sky homepage is loaded."
+        "Healing Sky homepage must be loaded."
       ],
       "testData": {},
       "startState": "Healing Sky homepage is loaded.",
@@ -29,25 +29,26 @@
         "CLIENT-REG-001-POSITIVE-01"
       ],
       "type": "positive",
-      "name": "Fill client registration fields except phone number",
-      "criteria": "After filling the specified fields and setting the date of birth, all fields retain their values, and the dropdowns show the correct date.",
+      "name": "Complete client registration form one field at a time",
+      "criteria": "Completing the client registration form one field at a time sets the Full Name, Email, Phone Number, Date of Birth, Address Lookup, and Referral Code fields correctly in sequence without placeholder text remaining.",
       "priority": "high",
       "preconditions": [
         "Client registration page is displayed."
       ],
       "testData": {
-        "fullName": "Cameron Brooks",
-        "email": "cameron.brooks.mtclzkto272@yopmail.com",
-        "address": "1 Infinite Loop, Cupertino, CA",
-        "referral_code": "NAN5EM09",
+        "fullName": "Alex Whitfield",
+        "email": "alex.whitfield.mtcqp6m7401@yopmail.com",
+        "phoneNumber": "+12122908991",
         "dob": {
           "month": "June",
           "date": "4",
           "year": "1999"
-        }
+        },
+        "address": "1 Wall St, New York, NY",
+        "referralCode": "NAN5EM09"
       },
       "startState": "Client registration page is displayed.",
-      "endState": "Client registration form shows filled details for Name, Email, Address, Referral Code, and Date of Birth."
+      "endState": "Client registration form is filled but not submitted."
     },
     {
       "id": "CLIENT-REG-003-POSITIVE-01",
@@ -58,17 +59,21 @@
         "CLIENT-REG-002-POSITIVE-01"
       ],
       "type": "positive",
-      "name": "Complete client registration with phone number",
-      "criteria": "After entering the phone number and clicking submit, registration succeeds if 'Registration completed successfully' or the client login page is displayed.",
+      "name": "Check and submit completed client registration form",
+      "criteria": "Submitting the completed client registration form succeeds when all fields are correctly set, and the application either displays 'Registration completed successfully' or navigates to the client login page (/client/login).",
       "priority": "high",
       "preconditions": [
-        "Client registration form shows filled details for Name, Email, Address, Referral Code, and Date of Birth."
+        "Client registration form is filled but not submitted."
       ],
       "testData": {
-        "phoneNumber": "+16179531740"
+        "fullName": "Alex Whitfield",
+        "email": "alex.whitfield.mtcqp6m7401@yopmail.com",
+        "phoneNumber": "+12122908991",
+        "address": "1 Wall St, New York, NY",
+        "referralCode": "NAN5EM09"
       },
-      "startState": "Client registration form shows filled details for Name, Email, Address, Referral Code, and Date of Birth.",
-      "endState": "Either registration success message is displayed, or the client login page is displayed."
+      "startState": "Client registration form is filled but not submitted.",
+      "endState": "Client registration succeeds with a success message or navigation to the client login page."
     },
     {
       "id": "CLIENT-AUTH-001-POSITIVE-01",
@@ -77,11 +82,11 @@
       "startMode": "base_url",
       "dependsOn": [],
       "type": "positive",
-      "name": "Navigate to client sign-in page and proceed to OTP verification",
-      "criteria": "Using the configured client email and selecting Email as OTP delivery, clicking Log in navigates to the OTP verification screen.",
+      "name": "Navigate to client sign-in page and log in with email",
+      "criteria": "Navigating to the client sign-in page, selecting Email as the OTP delivery method, entering the configured client email, and clicking Log in opens the OTP verification screen.",
       "priority": "high",
       "preconditions": [
-        "Healing Sky homepage is loaded."
+        "Healing Sky homepage must be loaded."
       ],
       "testData": {},
       "startState": "Healing Sky homepage is loaded.",
@@ -96,15 +101,15 @@
         "CLIENT-AUTH-001-POSITIVE-01"
       ],
       "type": "positive",
-      "name": "Complete OTP verification to authenticate client",
-      "criteria": "Entering the configured OTP bypass value and submitting verifies the OTP, displays the success message, and navigates to the authenticated client dashboard.",
-      "priority": "critical",
+      "name": "Submit OTP and verify sign-in success",
+      "criteria": "Entering the configured OTP into the OTP fields and clicking Verify displays 'OTP verified successfully' and navigates to the authenticated client dashboard (/client/dashboard).",
+      "priority": "high",
       "preconditions": [
         "Client OTP verification screen is displayed."
       ],
       "testData": {},
       "startState": "Client OTP verification screen is displayed.",
-      "endState": "Client is authenticated, and the dashboard is displayed."
+      "endState": "Authenticated client dashboard is displayed."
     },
     {
       "id": "CLIENT-AUTH-003-POSITIVE-01",
@@ -115,15 +120,15 @@
         "CLIENT-AUTH-002-POSITIVE-01"
       ],
       "type": "positive",
-      "name": "Log out and return to the homepage",
-      "criteria": "Clicking the profile avatar or account menu, selecting log out, and confirming returns the client to the homepage with the Log in option visible.",
+      "name": "Log out from authenticated client dashboard",
+      "criteria": "Logging out from the authenticated client dashboard returns the client to the Healing Sky homepage with the Log in option visible again.",
       "priority": "high",
       "preconditions": [
-        "Client dashboard is displayed for an authenticated client."
+        "Authenticated client dashboard is displayed."
       ],
       "testData": {},
-      "startState": "Client dashboard is displayed for an authenticated client.",
-      "endState": "Healing Sky homepage is displayed with Log in option visible."
+      "startState": "Authenticated client dashboard is displayed.",
+      "endState": "Healing Sky homepage is displayed with the Log in option visible."
     }
   ]
 }

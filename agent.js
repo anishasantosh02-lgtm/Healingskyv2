@@ -2034,6 +2034,18 @@ async function clickElement(
   }
 
 
+  // Bring the control comfortably into view before acting on it.
+  //
+  // Only scrolls when the element is actually near an edge or off
+  // screen: re-centring something already in full view makes the page
+  // jump on every single step, which reads as flickering.
+
+  await smoothScrollIntoView(
+    page,
+    element
+  );
+
+
   // Show where this click is about to land. Done before the click so
   // the marker is visible even when the click navigates away, and it
   // covers forced clicks and hidden-input fallbacks that emit no
@@ -2075,6 +2087,79 @@ async function clickElement(
   } catch (
     normalClickError
   ) {
+
+    // --------------------------------------------------------
+    // Off-screen retry
+    // --------------------------------------------------------
+    //
+    // "element is outside of the viewport" means the control moved
+    // after we scrolled to it, which happens constantly on pages that
+    // re-render as they load. Scroll to it again and retry before
+    // treating this as a real failure.
+    //
+    // --------------------------------------------------------
+
+    let recovered =
+      false;
+
+
+    try {
+
+      await element.scrollIntoViewIfNeeded({
+        timeout:
+          5000,
+      });
+
+
+      await element.evaluate(
+        (el) =>
+          el.scrollIntoView({
+            block: "nearest",
+            inline: "nearest",
+            behavior: "instant",
+          })
+      );
+
+
+      await page.waitForTimeout(
+        250
+      );
+
+
+      await element.click({
+        timeout:
+          8000,
+      });
+
+
+      recovered =
+        true;
+
+    } catch {
+      // Fall through to the remaining fallbacks.
+    }
+
+
+    if (
+      recovered
+    ) {
+
+      await settleAfterClick(
+        page,
+        urlBeforeClick
+      );
+
+
+      return {
+
+        clicked:
+          true,
+
+        via:
+          "offscreen_retry",
+      };
+    }
+
 
     // --------------------------------------------------------
     // Hidden native radio/checkbox fallback.
@@ -2296,6 +2381,12 @@ async function typeText(
       timeout:
         10000,
     });
+
+
+  await smoothScrollIntoView(
+    page,
+    element
+  );
 
 
   // Mark the field being filled, so a watcher can follow the form
@@ -2718,6 +2809,241 @@ async function typeText(
 
 
 // ============================================================
+// Smooth, minimal scrolling
+// ============================================================
+//
+// Filling a form should walk steadily DOWN the page. Two things break
+// that illusion:
+//
+//   1. centring each field, which scrolls the page back UP whenever the
+//      field sits above the middle of the window -- so the view jumps
+//      backwards after every entry
+//   2. instant jumps rather than a glide the eye can follow
+//
+// So this scrolls by the minimum amount needed ("nearest") and only
+// when the element is not already in view. A field that is already
+// visible causes no scrolling at all, and a field further down pulls
+// the page gently downwards, never back up.
+//
+// ============================================================
+
+const EDGE_MARGIN =
+  24;
+
+
+async function smoothScrollIntoView(
+  page,
+  element,
+  options = {}
+) {
+
+  // A dropdown trigger needs clear space BELOW it, because its option
+  // panel opens downwards. Scrolling such a trigger by the minimum
+  // amount leaves it at the bottom edge, and the panel then renders
+  // off screen where its options cannot be clicked. Those get centred
+  // instead; ordinary fields keep the minimal, downward-only scroll.
+
+  const requiredSpaceBelow =
+    options.spaceBelow ||
+    0;
+
+
+  try {
+
+    const needsScroll =
+      await element.evaluate(
+        (el, { margin, spaceBelow }) => {
+
+          const rect =
+            el.getBoundingClientRect();
+
+          const height =
+            window.innerHeight;
+
+
+          // Already inside the viewport, with enough room beneath it
+          // for anything it opens: leave the page exactly where it is.
+          // This is what stops the view jumping backwards.
+          if (
+            rect.top >= margin &&
+            rect.bottom <= height - margin - spaceBelow
+          ) {
+            return false;
+          }
+
+          // "nearest" scrolls the minimum distance in the direction
+          // actually required, rather than recentring the page.
+          // Anything that opens a panel is centred so the panel fits.
+          el.scrollIntoView({
+            block: spaceBelow > 0 ? "center" : "nearest",
+            inline: "nearest",
+            behavior: "smooth",
+          });
+
+          return true;
+        },
+
+        {
+          margin:
+            EDGE_MARGIN,
+
+          spaceBelow:
+            requiredSpaceBelow,
+        }
+      );
+
+
+    if (
+      needsScroll
+    ) {
+
+      // Let the smooth scroll finish before acting.
+
+      await page.waitForTimeout(
+        420
+      );
+    }
+
+  } catch {
+    // Detached or hidden element; the caller still tries to act.
+  }
+}
+
+
+// ============================================================
+// Whole-page screenshot
+// ============================================================
+//
+// fullPage only grows to the DOCUMENT's height. Layouts that put their
+// content inside an internally scrolling panel therefore capture as a
+// single viewport, silently cropping everything below the fold.
+//
+// The client registration form is exactly that: it lives in a
+// div.login-content that scrolls on its own, so the Submit button sits
+// outside the document's scroll height and never appears in evidence.
+//
+// So before capturing we let every inner scroller expand to its full
+// content height, take the shot, then restore the original inline
+// styles exactly.
+//
+// ============================================================
+
+// Skeleton placeholders render before real content arrives. Capturing
+// during that window produces evidence that shows grey bars instead of
+// the screen under test, so we wait for them to clear first.
+
+const SKELETON_SELECTOR = [
+  // Skeleton placeholders
+  "[class*='skeleton' i]",
+  "[class*='shimmer' i]",
+  "[class*='placeholder-glow' i]",
+  "[class*='animate-pulse' i]",
+  ".react-loading-skeleton",
+  "[aria-busy='true']",
+
+  // Full-screen loaders and spinners. Submitting the registration
+  // form throws up a branded overlay for several seconds, and a
+  // capture taken during it shows a spinner instead of the result.
+  "[class*='loader' i]",
+  "[class*='loading' i]",
+  "[class*='spinner' i]",
+  "[class*='backdrop' i]",
+  ".MuiCircularProgress-root",
+  ".p-progress-spinner",
+].join(
+  ","
+);
+
+
+async function waitForStableContent(
+  page
+) {
+
+  // Let in-flight requests finish. Long-polling apps never go idle, so
+  // this is best-effort and short.
+
+  await page
+    .waitForLoadState(
+      "networkidle",
+      {
+        timeout:
+          3000,
+      }
+    )
+    .catch(
+      () => {}
+    );
+
+
+  // Wait for loading skeletons to disappear.
+
+  await page
+    .waitForFunction(
+      (selector) => {
+
+        const nodes =
+          document.querySelectorAll(
+            selector
+          );
+
+        for (const node of nodes) {
+          const rect = node.getBoundingClientRect();
+          if (rect.width > 0 && rect.height > 0) return false;
+        }
+
+        return true;
+      },
+
+      SKELETON_SELECTOR,
+
+      {
+        timeout:
+          6000,
+      }
+    )
+    .catch(
+      () => {}
+    );
+
+
+  // A short beat for fonts and images to paint.
+
+  await page.waitForTimeout(
+    250
+  );
+}
+
+
+/**
+ * Full-page screenshot.
+ *
+ * The page is never mutated for a capture. An earlier version expanded
+ * inner scroll panels and restored them afterwards, which made the UI
+ * visibly flicker on every step. Instead the viewport is tall enough
+ * (see index.js) that pages fit without an inner scrollbar at all.
+ */
+async function captureWholePage(
+  page,
+  filePath
+) {
+
+  await waitForStableContent(
+    page
+  );
+
+
+  await page.screenshot({
+
+    path:
+      filePath,
+
+    fullPage:
+      true,
+  });
+}
+
+
+// ============================================================
 // Set several custom dropdowns in one step
 // ============================================================
 //
@@ -2803,6 +3129,18 @@ async function selectOptions(
         );
 
 
+      // Reserve room for the option panel that is about to open.
+
+      await smoothScrollIntoView(
+        page,
+        trigger,
+        {
+          spaceBelow:
+            320,
+        }
+      );
+
+
       await highlightAgentElement(
         page,
         triggerId
@@ -2883,6 +3221,19 @@ async function selectOptions(
           wanted
         ) {
 
+          // Long option lists scroll inside the panel, so bring the
+          // chosen one into view before clicking it.
+
+          await option
+            .scrollIntoViewIfNeeded({
+              timeout:
+                5000,
+            })
+            .catch(
+              () => {}
+            );
+
+
           // Options carry no data-agent-id, so highlight by geometry.
 
           await highlightLocator(
@@ -2891,10 +3242,27 @@ async function selectOptions(
           );
 
 
-          await option.click({
-            timeout:
-              10000,
-          });
+          try {
+
+            await option.click({
+              timeout:
+                8000,
+            });
+
+          } catch {
+
+            // Panels often sit under a transparent overlay that
+            // reports the click as intercepted; a forced click still
+            // reaches the option.
+
+            await option.click({
+              timeout:
+                8000,
+
+              force:
+                true,
+            });
+          }
 
 
           clicked =
@@ -4160,6 +4528,75 @@ export async function runScenario(
     null;
 
 
+  // ----------------------------------------------------------
+  // Step-by-step evidence
+  // ----------------------------------------------------------
+  //
+  // Every capture is fullPage, so a long form is recorded in its
+  // entirety -- including the Submit button below the fold, which a
+  // viewport-sized shot cuts off.
+  //
+  // ----------------------------------------------------------
+
+  const stepScreenshots =
+    [];
+
+
+  let stepCounter =
+    0;
+
+
+  async function captureStepScreenshot(
+    label
+  ) {
+
+    stepCounter++;
+
+
+    try {
+
+      fs.mkdirSync(
+        screenshotDir,
+        {
+          recursive:
+            true,
+        }
+      );
+
+
+      const stepPath =
+        path.join(
+          screenshotDir,
+
+          `${safeFileName(
+            scenarioId
+          )}_step${String(
+            stepCounter
+          ).padStart(
+            2,
+            "0"
+          )}_${safeFileName(
+            label
+          )}.png`
+        );
+
+
+      await captureWholePage(
+        page,
+        stepPath
+      );
+
+
+      stepScreenshots.push(
+        stepPath
+      );
+
+    } catch {
+      // Evidence capture must never break a scenario.
+    }
+  }
+
+
   const navigationState = {
 
     count:
@@ -5074,6 +5511,29 @@ Be concise and evidence-driven.
 
 
         // ====================================================
+        // Step evidence
+        // ====================================================
+        //
+        // Captured after every action that changes the page, so the
+        // report shows the run progressing rather than only its final
+        // state. get_page_state is skipped: it only reads.
+        //
+        // ====================================================
+
+        if (
+          toolName !==
+            "get_page_state" &&
+          toolName !==
+            "finish_test"
+        ) {
+
+          await captureStepScreenshot(
+            toolName
+          );
+        }
+
+
+        // ====================================================
         // Missing runtime credential
         // ====================================================
 
@@ -5191,13 +5651,16 @@ Be concise and evidence-driven.
 
 
     // ========================================================
-    // Screenshot on non-pass
+    // Final screenshot for every scenario
+    // ========================================================
+    //
+    // Captured whatever the verdict: a passing scenario needs evidence
+    // just as much as a failing one, and it is what the report links
+    // to as the scenario's end state.
+    //
     // ========================================================
 
-    if (
-      finishedVerdict.status !==
-      "pass"
-    ) {
+    {
 
       try {
 
@@ -5220,14 +5683,10 @@ Be concise and evidence-driven.
           );
 
 
-        await page.screenshot({
-
-          path:
-            screenshotPath,
-
-          fullPage:
-            false,
-        });
+        await captureWholePage(
+          page,
+          screenshotPath
+        );
 
       } catch (
         screenshotError
@@ -5296,6 +5755,9 @@ Be concise and evidence-driven.
           stepsTaken,
           testCredentials
         ),
+
+
+      stepScreenshots,
 
 
       consoleErrors:

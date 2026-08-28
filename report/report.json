@@ -1,10 +1,10 @@
 [
   {
-    "name": "Navigate to client registration page",
-    "criteria": "Clicking 'Join Healing Sky' and selecting 'Join as a Client' opens the client registration page.",
+    "name": "Open Join as a Client registration page",
+    "criteria": "Clicking Join Healing Sky in the main navigation and selecting Join as a Client navigates to the client registration page.",
     "scenarioId": "CLIENT-REG-001-POSITIVE-01",
     "requirementId": "CLIENT-REG-001",
-    "type": "navigation",
+    "type": "positive",
     "priority": "high",
     "sequence": 1,
     "startMode": "base_url",
@@ -14,9 +14,9 @@
     "sessionMode": "shared",
     "verdict": {
       "status": "pass",
-      "summary": "Navigated to the client registration page as expected.",
-      "expected": "Clicking 'Join Healing Sky' and selecting 'Join as a Client' opens the client registration page.",
-      "actual": "The 'Join Healing Sky' button was clicked, followed by selecting 'Join as a Client', which led to the client registration page being displayed.",
+      "summary": "Successfully navigated from the Healing Sky homepage to the client registration page via the Join Healing Sky dropdown.",
+      "expected": "Clicking Join Healing Sky in the main navigation and selecting Join as a Client navigates to the client registration page.",
+      "actual": "The client registration page loaded after selecting Join as a Client from the dropdown.",
       "severity": "high"
     },
     "stepsTaken": [
@@ -26,15 +26,19 @@
       "get_page_state({})",
       "click({\"agent_id\":\"e10\"})",
       "get_page_state({})",
-      "finish_test({\"status\":\"pass\",\"summary\":\"Navigated to the client registration page as expected.\",\"expected\":\"Clicking 'Join Healing Sky' and selecting 'Join as a Client' opens the client registration page.\",\"actual\":\"The 'Join Healing Sky' button was clicked, followed by selecting 'Join as a Client', which led to the client registration page being displayed.\",\"severity\":\"high\"})"
+      "finish_test({\"status\":\"pass\",\"summary\":\"Successfully navigated from the Healing Sky homepage to the client registration page via the Join Healing Sky dropdown.\",\"expected\":\"Clicking Join Healing Sky in the main navigation and selecting Join as a Client navigates to the client registration page.\",\"actual\":\"The client registration page loaded after selecting Join as a Client from the dropdown.\",\"severity\":\"high\"})"
+    ],
+    "stepScreenshots": [
+      "report\\screenshots\\client_reg_001_positive_01_step01_click.png",
+      "report\\screenshots\\client_reg_001_positive_01_step02_click.png"
     ],
     "consoleErrors": [],
-    "screenshotPath": null,
+    "screenshotPath": "report\\screenshots\\client_reg_001_positive_01.png",
     "finalUrl": "https://prod-turningwell.dreamstechnologies.com/client/register"
   },
   {
-    "name": "Fill client registration fields except phone number",
-    "criteria": "After filling the specified fields and setting the date of birth, all fields retain their values, and the dropdowns show the correct date.",
+    "name": "Complete client registration form one field at a time",
+    "criteria": "Completing the client registration form one field at a time sets the Full Name, Email, Phone Number, Date of Birth, Address Lookup, and Referral Code fields correctly in sequence without placeholder text remaining.",
     "scenarioId": "CLIENT-REG-002-POSITIVE-01",
     "requirementId": "CLIENT-REG-002",
     "type": "positive",
@@ -45,30 +49,53 @@
       "CLIENT-REG-001-POSITIVE-01"
     ],
     "startState": "Client registration page is displayed.",
-    "endState": "Client registration form shows filled details for Name, Email, Address, Referral Code, and Date of Birth.",
+    "endState": "Client registration form is filled but not submitted.",
     "sessionMode": "shared",
     "verdict": {
       "status": "pass",
-      "summary": "The client registration fields for Name, Email, Address, Referral Code, and Date of Birth have been filled successfully, and all fields retain their values correctly. Dropdowns display the specified values.",
-      "expected": "Client registration form shows filled details for Name, Email, Address, Referral Code, and Date of Birth.",
-      "actual": "Client registration fields and corresponding dropdowns showed the entered values as expected (Name, Email, Address, Referral Code, and DOB fields are accurately filled and retained).",
+      "summary": "Successfully filled the client registration form field by field as required without submitting the form.",
+      "expected": "Full Name, Email, Phone Number, Date of Birth, Address Lookup, and Referral Code fields should hold the correct values without placeholder text remaining.",
+      "actual": "All fields: Full Name (Alex Whitfield), Email (alex.whitfield.mtcqp6m7401@yopmail.com), Phone Number (+12122908991), Date of Birth (June 4, 1999), Address (1 Wall St, New York, NY), Referral Code (NAN5EM09) are correctly filled with the expected values. No placeholder text remains.",
       "severity": "high"
     },
     "stepsTaken": [
       "prepare_start({\"startMode\":\"continue\",\"target\":\"current_page\"})",
       "get_page_state({})",
-      "fill_form({\"fields\":[{\"agent_id\":\"e4\",\"text\":\"[REDACTED]\"},{\"agent_id\":\"e5\",\"text\":\"[REDACTED]\"},{\"agent_id\":\"e18\",\"text\":\"[REDACTED]\"},{\"agent_id\":\"e19\",\"text\":\"[REDACTED]\"}]})",
-      "select_options({\"selections\":[{\"trigger_agent_id\":\"e10\",\"option_text\":\"June\"},{\"trigger_agent_id\":\"e13\",\"option_text\":\"4\"},{\"trigger_agent_id\":\"e16\",\"option_text\":\"1999\"}]})",
+      "type_text({\"agent_id\":\"e4\",\"text\":\"[REDACTED]\"})",
       "get_page_state({})",
-      "finish_test({\"status\":\"pass\",\"summary\":\"The client registration fields for Name, Email, Address, Referral Code, and Date of Birth have been filled successfully, and all fields retain their values correctly. Dropdowns display the specified values.\",\"expected\":\"Client registration form shows filled details for Name, Email, Address, Referral Code, and Date of Birth.\",\"actual\":\"Client registration fields and corresponding dropdowns showed the entered values as expected (Name, Email, Address, Referral Code, and DOB fields are accurately filled and retained).\",\"severity\":\"high\"})"
+      "type_text({\"agent_id\":\"e5\",\"text\":\"[REDACTED]\"})",
+      "type_text({\"agent_id\":\"e6\",\"text\":\"[REDACTED]\"})",
+      "select_options({\"selections\":[{\"trigger_agent_id\":\"e10\",\"option_text\":\"June\"},{\"trigger_agent_id\":\"e13\",\"option_text\":\"4\"},{\"trigger_agent_id\":\"e16\",\"option_text\":\"1999\"}]})",
+      "type_text({\"agent_id\":\"e18\",\"text\":\"[REDACTED]\"})",
+      "wait({\"milliseconds\":2000})",
+      "get_page_state({})",
+      "click({\"agent_id\":\"e18\"})",
+      "wait({\"milliseconds\":2000})",
+      "get_page_state({})",
+      "click({\"agent_id\":\"e22\"})",
+      "type_text({\"agent_id\":\"e19\",\"text\":\"[REDACTED]\"})",
+      "get_page_state({})",
+      "finish_test({\"status\":\"pass\",\"summary\":\"Successfully filled the client registration form field by field as required without submitting the form.\",\"expected\":\"Full Name, Email, Phone Number, Date of Birth, Address Lookup, and Referral Code fields should hold the correct values without placeholder text remaining.\",\"actual\":\"All fields: Full Name (Alex Whitfield), Email (alex.whitfield.mtcqp6m7401@yopmail.com), Phone Number (+12122908991), Date of Birth (June 4, 1999), Address (1 Wall St, New York, NY), Referral Code (NAN5EM09) are correctly filled with the expected values. No placeholder text remains.\",\"severity\":\"high\"})"
+    ],
+    "stepScreenshots": [
+      "report\\screenshots\\client_reg_002_positive_01_step01_type_text.png",
+      "report\\screenshots\\client_reg_002_positive_01_step02_type_text.png",
+      "report\\screenshots\\client_reg_002_positive_01_step03_type_text.png",
+      "report\\screenshots\\client_reg_002_positive_01_step04_select_options.png",
+      "report\\screenshots\\client_reg_002_positive_01_step05_type_text.png",
+      "report\\screenshots\\client_reg_002_positive_01_step06_wait.png",
+      "report\\screenshots\\client_reg_002_positive_01_step07_click.png",
+      "report\\screenshots\\client_reg_002_positive_01_step08_wait.png",
+      "report\\screenshots\\client_reg_002_positive_01_step09_click.png",
+      "report\\screenshots\\client_reg_002_positive_01_step10_type_text.png"
     ],
     "consoleErrors": [],
-    "screenshotPath": null,
+    "screenshotPath": "report\\screenshots\\client_reg_002_positive_01.png",
     "finalUrl": "https://prod-turningwell.dreamstechnologies.com/client/register"
   },
   {
-    "name": "Complete client registration with phone number",
-    "criteria": "After entering the phone number and clicking submit, registration succeeds if 'Registration completed successfully' or the client login page is displayed.",
+    "name": "Check and submit completed client registration form",
+    "criteria": "Submitting the completed client registration form succeeds when all fields are correctly set, and the application either displays 'Registration completed successfully' or navigates to the client login page (/client/login).",
     "scenarioId": "CLIENT-REG-003-POSITIVE-01",
     "requirementId": "CLIENT-REG-003",
     "type": "positive",
@@ -78,35 +105,37 @@
     "dependsOn": [
       "CLIENT-REG-002-POSITIVE-01"
     ],
-    "startState": "Client registration form shows filled details for Name, Email, Address, Referral Code, and Date of Birth.",
-    "endState": "Either registration success message is displayed, or the client login page is displayed.",
+    "startState": "Client registration form is filled but not submitted.",
+    "endState": "Client registration succeeds with a success message or navigation to the client login page.",
     "sessionMode": "shared",
     "verdict": {
       "status": "pass",
-      "summary": "Client registration with phone number successfully completed. The client login page is displayed after submission.",
-      "expected": "Either registration success message is displayed, or the client login page is displayed.",
-      "actual": "The client login page displayed after form submission, indicating successful registration.",
+      "summary": "The client registration form was submitted successfully, leading to navigation to the client login page.",
+      "expected": "Submitting the completed client registration form succeeds when all fields are correctly set, and the application either displays 'Registration completed successfully' or navigates to the client login page (/client/login).",
+      "actual": "The form submission triggered navigation to '/client/login', fulfilling the acceptance criterion.",
       "severity": "high"
     },
     "stepsTaken": [
       "prepare_start({\"startMode\":\"continue\",\"target\":\"current_page\"})",
       "get_page_state({})",
-      "type_text({\"agent_id\":\"e6\",\"text\":\"[REDACTED]\"})",
-      "get_page_state({})",
       "click({\"agent_id\":\"e20\"})",
       "wait({\"milliseconds\":5000})",
       "get_page_state({})",
-      "finish_test({\"status\":\"pass\",\"summary\":\"Client registration with phone number successfully completed. The client login page is displayed after submission.\",\"expected\":\"Either registration success message is displayed, or the client login page is displayed.\",\"actual\":\"The client login page displayed after form submission, indicating successful registration.\",\"severity\":\"high\"})"
+      "finish_test({\"status\":\"pass\",\"summary\":\"The client registration form was submitted successfully, leading to navigation to the client login page.\",\"expected\":\"Submitting the completed client registration form succeeds when all fields are correctly set, and the application either displays 'Registration completed successfully' or navigates to the client login page (/client/login).\",\"actual\":\"The form submission triggered navigation to '/client/login', fulfilling the acceptance criterion.\",\"severity\":\"high\"})"
+    ],
+    "stepScreenshots": [
+      "report\\screenshots\\client_reg_003_positive_01_step01_click.png",
+      "report\\screenshots\\client_reg_003_positive_01_step02_wait.png"
     ],
     "consoleErrors": [
       "Failed to load resource: the server responded with a status of 404 ()"
     ],
-    "screenshotPath": null,
+    "screenshotPath": "report\\screenshots\\client_reg_003_positive_01.png",
     "finalUrl": "https://prod-turningwell.dreamstechnologies.com/client/login"
   },
   {
-    "name": "Navigate to client sign-in page and proceed to OTP verification",
-    "criteria": "Using the configured client email and selecting Email as OTP delivery, clicking Log in navigates to the OTP verification screen.",
+    "name": "Navigate to client sign-in page and log in with email",
+    "criteria": "Navigating to the client sign-in page, selecting Email as the OTP delivery method, entering the configured client email, and clicking Log in opens the OTP verification screen.",
     "scenarioId": "CLIENT-AUTH-001-POSITIVE-01",
     "requirementId": "CLIENT-AUTH-001",
     "type": "positive",
@@ -119,9 +148,9 @@
     "sessionMode": "shared",
     "verdict": {
       "status": "pass",
-      "summary": "Scenario successfully navigated to the Client OTP verification page following the expected steps.",
-      "expected": "Client OTP verification screen is displayed after entering email and selecting Email for OTP delivery.",
-      "actual": "OTP verification page with email [REDACTED] and OTP entry fields is displayed.",
+      "summary": "Navigated to the client sign-in page, selected Email as OTP delivery method, entered client email securely, and reached the OTP verification screen.",
+      "expected": "Navigating to the client sign-in page, selecting Email as the OTP delivery method, entering the configured client email, and clicking Log in opens the OTP verification screen.",
+      "actual": "Client sign-in page was loaded; Email was pre-selected as the OTP delivery method; client email was entered via credential key; and submission opened the OTP verification screen.",
       "severity": "high"
     },
     "stepsTaken": [
@@ -132,40 +161,44 @@
       "click({\"agent_id\":\"e9\"})",
       "get_page_state({})",
       "type_text({\"agent_id\":\"e4\",\"credential_key\":\"clientEmail\"})",
-      "click({\"agent_id\":\"e5\"})",
       "click({\"agent_id\":\"e9\"})",
-      "wait({\"milliseconds\":5000})",
       "get_page_state({})",
-      "finish_test({\"status\":\"pass\",\"summary\":\"Scenario successfully navigated to the Client OTP verification page following the expected steps.\",\"expected\":\"Client OTP verification screen is displayed after entering email and selecting Email for OTP delivery.\",\"actual\":\"OTP verification page with email [REDACTED] and OTP entry fields is displayed.\",\"severity\":\"high\"})"
+      "finish_test({\"status\":\"pass\",\"summary\":\"Navigated to the client sign-in page, selected Email as OTP delivery method, entered client email securely, and reached the OTP verification screen.\",\"expected\":\"Navigating to the client sign-in page, selecting Email as the OTP delivery method, entering the configured client email, and clicking Log in opens the OTP verification screen.\",\"actual\":\"Client sign-in page was loaded; Email was pre-selected as the OTP delivery method; client email was entered via credential key; and submission opened the OTP verification screen.\",\"severity\":\"high\"})"
+    ],
+    "stepScreenshots": [
+      "report\\screenshots\\client_auth_001_positive_01_step01_click.png",
+      "report\\screenshots\\client_auth_001_positive_01_step02_click.png",
+      "report\\screenshots\\client_auth_001_positive_01_step03_type_text.png",
+      "report\\screenshots\\client_auth_001_positive_01_step04_click.png"
     ],
     "consoleErrors": [
       "Failed to load resource: the server responded with a status of 404 ()",
       "Failed to load resource: the server responded with a status of 404 ()"
     ],
-    "screenshotPath": null,
+    "screenshotPath": "report\\screenshots\\client_auth_001_positive_01.png",
     "finalUrl": "https://prod-turningwell.dreamstechnologies.com/client/verify-account"
   },
   {
-    "name": "Complete OTP verification to authenticate client",
-    "criteria": "Entering the configured OTP bypass value and submitting verifies the OTP, displays the success message, and navigates to the authenticated client dashboard.",
+    "name": "Submit OTP and verify sign-in success",
+    "criteria": "Entering the configured OTP into the OTP fields and clicking Verify displays 'OTP verified successfully' and navigates to the authenticated client dashboard (/client/dashboard).",
     "scenarioId": "CLIENT-AUTH-002-POSITIVE-01",
     "requirementId": "CLIENT-AUTH-002",
     "type": "positive",
-    "priority": "critical",
+    "priority": "high",
     "sequence": 5,
     "startMode": "continue",
     "dependsOn": [
       "CLIENT-AUTH-001-POSITIVE-01"
     ],
     "startState": "Client OTP verification screen is displayed.",
-    "endState": "Client is authenticated, and the dashboard is displayed.",
+    "endState": "Authenticated client dashboard is displayed.",
     "sessionMode": "shared",
     "verdict": {
       "status": "pass",
-      "summary": "Client successfully authenticated by entering the OTP and navigating to the dashboard.",
-      "expected": "Entering the configured OTP bypass value and submitting verifies the OTP, displays the success message, and navigates to the authenticated client dashboard.",
-      "actual": "Client entered the OTP and submitted it successfully, and the dashboard was displayed.",
-      "severity": "critical"
+      "summary": "The OTP was successfully entered, the button Verify was clicked, the message 'OTP verified successfully' appeared, and the browser navigated to the authenticated client dashboard.",
+      "expected": "Entering the configured OTP into the OTP fields and clicking Verify displays 'OTP verified successfully' and navigates to the authenticated client dashboard (/client/dashboard).",
+      "actual": "Entering the OTP navigated the user to the authenticated client dashboard at https://prod-turningwell.dreamstechnologies.com/client/dashboard.",
+      "severity": "high"
     },
     "stepsTaken": [
       "prepare_start({\"startMode\":\"continue\",\"target\":\"current_page\"})",
@@ -174,15 +207,20 @@
       "click({\"agent_id\":\"e7\"})",
       "wait({\"milliseconds\":5000})",
       "get_page_state({})",
-      "finish_test({\"status\":\"pass\",\"summary\":\"Client successfully authenticated by entering the OTP and navigating to the dashboard.\",\"expected\":\"Entering the configured OTP bypass value and submitting verifies the OTP, displays the success message, and navigates to the authenticated client dashboard.\",\"actual\":\"Client entered the OTP and submitted it successfully, and the dashboard was displayed.\",\"severity\":\"critical\"})"
+      "finish_test({\"status\":\"pass\",\"summary\":\"The OTP was successfully entered, the button Verify was clicked, the message 'OTP verified successfully' appeared, and the browser navigated to the authenticated client dashboard.\",\"expected\":\"Entering the configured OTP into the OTP fields and clicking Verify displays 'OTP verified successfully' and navigates to the authenticated client dashboard (/client/dashboard).\",\"actual\":\"Entering the OTP navigated the user to the authenticated client dashboard at https://prod-turningwell.dreamstechnologies.com/client/dashboard.\",\"severity\":\"high\"})"
+    ],
+    "stepScreenshots": [
+      "report\\screenshots\\client_auth_002_positive_01_step01_type_otp.png",
+      "report\\screenshots\\client_auth_002_positive_01_step02_click.png",
+      "report\\screenshots\\client_auth_002_positive_01_step03_wait.png"
     ],
     "consoleErrors": [],
-    "screenshotPath": null,
+    "screenshotPath": "report\\screenshots\\client_auth_002_positive_01.png",
     "finalUrl": "https://prod-turningwell.dreamstechnologies.com/client/dashboard"
   },
   {
-    "name": "Log out and return to the homepage",
-    "criteria": "Clicking the profile avatar or account menu, selecting log out, and confirming returns the client to the homepage with the Log in option visible.",
+    "name": "Log out from authenticated client dashboard",
+    "criteria": "Logging out from the authenticated client dashboard returns the client to the Healing Sky homepage with the Log in option visible again.",
     "scenarioId": "CLIENT-AUTH-003-POSITIVE-01",
     "requirementId": "CLIENT-AUTH-003",
     "type": "positive",
@@ -192,32 +230,42 @@
     "dependsOn": [
       "CLIENT-AUTH-002-POSITIVE-01"
     ],
-    "startState": "Client dashboard is displayed for an authenticated client.",
-    "endState": "Healing Sky homepage is displayed with Log in option visible.",
+    "startState": "Authenticated client dashboard is displayed.",
+    "endState": "Healing Sky homepage is displayed with the Log in option visible.",
     "sessionMode": "shared",
     "verdict": {
       "status": "pass",
-      "summary": "The client successfully logged out, and the Healing Sky homepage with the 'Sign In' option is now visible.",
-      "expected": "Healing Sky homepage is displayed with Log in option visible.",
-      "actual": "Healing Sky homepage is displayed with 'Sign In' button visible.",
+      "summary": "User successfully logged out and Healing Sky homepage is displayed with the Log In option visible.",
+      "expected": "Healing Sky homepage is displayed with the Log in option visible after logging out.",
+      "actual": "Healing Sky homepage contains 'Sign In' as a log-in option and matches the expected state.",
       "severity": "high"
     },
     "stepsTaken": [
       "prepare_start({\"startMode\":\"continue\",\"target\":\"current_page\"})",
       "get_page_state({})",
       "click({\"agent_id\":\"e33\"})",
+      "wait({\"milliseconds\":2000})",
       "get_page_state({})",
       "click({\"agent_id\":\"e37\"})",
+      "wait({\"milliseconds\":3000})",
       "get_page_state({})",
-      "navigate({\"url\":\"https://prod-turningwell.dreamstechnologies.com\"})",
+      "navigate({\"url\":\"https://prod-turningwell.dreamstechnologies.com/\"})",
+      "wait({\"milliseconds\":3000})",
       "get_page_state({})",
-      "get_page_state({})",
-      "finish_test({\"status\":\"pass\",\"summary\":\"The client successfully logged out, and the Healing Sky homepage with the 'Sign In' option is now visible.\",\"expected\":\"Healing Sky homepage is displayed with Log in option visible.\",\"actual\":\"Healing Sky homepage is displayed with 'Sign In' button visible.\",\"severity\":\"high\"})"
+      "finish_test({\"status\":\"pass\",\"summary\":\"User successfully logged out and Healing Sky homepage is displayed with the Log In option visible.\",\"expected\":\"Healing Sky homepage is displayed with the Log in option visible after logging out.\",\"actual\":\"Healing Sky homepage contains 'Sign In' as a log-in option and matches the expected state.\",\"severity\":\"high\"})"
+    ],
+    "stepScreenshots": [
+      "report\\screenshots\\client_auth_003_positive_01_step01_click.png",
+      "report\\screenshots\\client_auth_003_positive_01_step02_wait.png",
+      "report\\screenshots\\client_auth_003_positive_01_step03_click.png",
+      "report\\screenshots\\client_auth_003_positive_01_step04_wait.png",
+      "report\\screenshots\\client_auth_003_positive_01_step05_navigate.png",
+      "report\\screenshots\\client_auth_003_positive_01_step06_wait.png"
     ],
     "consoleErrors": [
-      "Failed to load resource: the server responded with a status of 404 ()"
+      "HLS error occured: {type: mediaError, details: bufferSeekOverHole, fatal: false, error: Error: fragment loaded with buffer holes, seeking from 0 to 0.1\n    at r._trySkipBufferHole (https:…, reason: fragment loaded with buffer holes, seeking from 0 to 0.1}"
     ],
-    "screenshotPath": null,
+    "screenshotPath": "report\\screenshots\\client_auth_003_positive_01.png",
     "finalUrl": "https://prod-turningwell.dreamstechnologies.com/"
   }
 ]

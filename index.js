@@ -961,11 +961,21 @@ function buildMarkdownReport(
       result.screenshotPath
     ) {
 
-      md +=
-        `**Screenshot:** ${path.relative(
+      const finalShot =
+        path.relative(
           OUTPUT_DIR,
           result.screenshotPath
-        )}\n\n`;
+        )
+          .split(
+            path.sep
+          )
+          .join(
+            "/"
+          );
+
+
+      md +=
+        `**Final state (full page):**\n\n![${result.scenarioId}](${finalShot})\n\n`;
     }
 
 
@@ -988,6 +998,51 @@ function buildMarkdownReport(
 
       md +=
         `- ${step}\n`;
+    }
+
+
+    // --------------------------------------------------------
+    // Step-by-step screenshots
+    // --------------------------------------------------------
+
+    const stepShots =
+      result.stepScreenshots ||
+      [];
+
+
+    if (
+      stepShots.length >
+      0
+    ) {
+
+      md +=
+        `\n**Step screenshots (${stepShots.length}):**\n\n`;
+
+
+      for (
+        const shot of
+        stepShots
+      ) {
+
+        const relative =
+          path.relative(
+            OUTPUT_DIR,
+            shot
+          )
+            .split(
+              path.sep
+            )
+            .join(
+              "/"
+            );
+
+
+        md +=
+          `![${path.basename(
+            shot,
+            ".png"
+          )}](${relative})\n\n`;
+      }
     }
 
 
@@ -1212,6 +1267,47 @@ async function main() {
   // ----------------------------------------------------------
   // Create output directories
   // ----------------------------------------------------------
+
+  // Clear evidence from previous runs, so the report only ever shows
+  // screenshots belonging to the run it describes.
+
+  if (
+    fs.existsSync(
+      SCREENSHOT_DIR
+    )
+  ) {
+
+    for (
+      const file of
+      fs.readdirSync(
+        SCREENSHOT_DIR
+      )
+    ) {
+
+      if (
+        file
+          .toLowerCase()
+          .endsWith(
+            ".png"
+          )
+      ) {
+
+        try {
+
+          fs.unlinkSync(
+            path.join(
+              SCREENSHOT_DIR,
+              file
+            )
+          );
+
+        } catch {
+          // File locked by a viewer; leave it.
+        }
+      }
+    }
+  }
+
 
   fs.mkdirSync(
     SCREENSHOT_DIR,
@@ -1555,6 +1651,10 @@ async function main() {
       headless,
 
       slowMo,
+
+      args: [
+        "--start-maximized",
+      ],
     });
 
 
@@ -1579,15 +1679,13 @@ async function main() {
           77.021184,
       },
 
-
-      viewport: {
-
-        width:
-          1440,
-
-        height:
-          900,
-      },
+      viewport:
+        process.env.VIEWPORT_WIDTH && process.env.VIEWPORT_HEIGHT
+          ? {
+              width: Number(process.env.VIEWPORT_WIDTH),
+              height: Number(process.env.VIEWPORT_HEIGHT),
+            }
+          : null,
     });
 
 
