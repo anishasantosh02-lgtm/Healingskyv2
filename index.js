@@ -1224,6 +1224,13 @@ async function main() {
     clientOtp:
       process.env.CLIENT_TEST_OTP,
 
+    // The provider sign-in account. Registration generates a fresh
+    // address every run, so signing in needs a separate, already
+    // registered provider that persists between runs.
+
+    providerEmail:
+      process.env.PROVIDER_TEST_EMAIL,
+
     // The provider sign-in OTP. The bypass value is normally the same
     // one the client flow uses, so fall back to it rather than making
     // every deployment configure the identical number twice.
@@ -1247,6 +1254,15 @@ async function main() {
     `Client test OTP configured: ${
       Boolean(
         testCredentials.clientOtp
+      )
+    }`
+  );
+
+
+  console.log(
+    `Provider test email configured: ${
+      Boolean(
+        testCredentials.providerEmail
       )
     }`
   );
@@ -1277,6 +1293,16 @@ async function main() {
 
     console.warn(
       "CLIENT_TEST_OTP is not configured."
+    );
+  }
+
+
+  if (
+    !testCredentials.providerEmail
+  ) {
+
+    console.warn(
+      "PROVIDER_TEST_EMAIL is not configured."
     );
   }
 

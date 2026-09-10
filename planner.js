@@ -381,10 +381,23 @@ export async function generateScenarios({
       );
 
 
-  const configuredClientEmail =
-    process.env
-      .CLIENT_TEST_EMAIL ||
-    "";
+  const configuredSignInEmails =
+    [
+      process.env
+        .CLIENT_TEST_EMAIL,
+
+      process.env
+        .PROVIDER_TEST_EMAIL,
+    ]
+      .filter(
+        Boolean
+      )
+      .map(
+        (value) =>
+          value
+            .trim()
+            .toLowerCase()
+      );
 
 
   function isSuppliedRegistrationEmail(
@@ -415,11 +428,11 @@ export async function generateScenarios({
 
 
     if (
-      configuredClientEmail &&
-      value.trim().toLowerCase() ===
-        configuredClientEmail
+      configuredSignInEmails.includes(
+        value
           .trim()
           .toLowerCase()
+      )
     ) {
 
       return false;
@@ -733,6 +746,7 @@ The browser execution agent knows symbolic credential names such as:
 
 clientEmail
 clientOtp
+providerEmail
 providerOtp
 
 Those values are NOT planner testData.
@@ -743,6 +757,7 @@ email
 clientEmail
 otp
 clientOtp
+providerEmail
 providerOtp
 password
 token
@@ -838,11 +853,14 @@ testData:
 }
 
 
-The provider sign-in flow works the same way, with one difference: its
-email address is NOT a configured credential. A provider requirement
-that spells out the address registered earlier in the run states it
-literally, so keep that address verbatim in the scenario description.
-Only the provider OTP is configured, under the key providerOtp.
+The provider sign-in flow works the same way, against its own account.
+Its configured keys are providerEmail and providerOtp, and they are as
+off-limits to testData as the client ones.
+
+Provider REGISTRATION is the opposite case: it creates a new account
+from a generated address that the requirement spells out literally.
+Keep that address verbatim in the scenario description and never
+replace it with the configured provider sign-in account.
 
 
 ============================================================
@@ -1627,6 +1645,7 @@ Important:
       "clientEmail",
       "otp",
       "clientOtp",
+      "providerEmail",
       "providerOtp",
       "password",
       "passcode",

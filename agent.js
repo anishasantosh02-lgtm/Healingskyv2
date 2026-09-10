@@ -30,6 +30,7 @@
 //
 // clientEmail
 // clientOtp
+// providerEmail
 // providerOtp
 //
 // Example:
@@ -42,6 +43,11 @@
 // type_otp({
 //   agent_ids: ["e10", "e11", "e12", "e13"],
 //   credential_key: "clientOtp"
+// })
+//
+// type_text({
+//   agent_id: "e5",
+//   credential_key: "providerEmail"
 // })
 //
 // type_otp({
@@ -156,6 +162,19 @@ function getCredentialValue(
 
   if (
     key ===
+    "providerEmail"
+  ) {
+
+    return (
+      testCredentials
+        ?.providerEmail ||
+      null
+    );
+  }
+
+
+  if (
+    key ===
     "providerOtp"
   ) {
 
@@ -185,6 +204,9 @@ function getSecretValues(
 
     testCredentials
       ?.clientOtp,
+
+    testCredentials
+      ?.providerEmail,
 
     testCredentials
       ?.providerOtp,
@@ -4766,6 +4788,7 @@ const tools = [
             enum: [
               "clientEmail",
               "clientOtp",
+              "providerEmail",
               "providerOtp",
             ],
           },
@@ -4911,6 +4934,7 @@ const tools = [
                   enum: [
                     "clientEmail",
                     "clientOtp",
+                    "providerEmail",
                     "providerOtp",
                   ],
                 },
@@ -5670,6 +5694,7 @@ Configured credential KEYS that may be available:
 
 clientEmail
 clientOtp
+providerEmail
 providerOtp
 
 You do NOT know their values.
@@ -5693,24 +5718,34 @@ type_otp({
   "credential_key": "clientOtp"
 })
 
-On the PROVIDER sign-in flow, use the provider OTP key instead:
+On the PROVIDER sign-in flow, at /provider/login, use the provider keys
+instead. They belong to a different account from the client ones, and
+the two are not interchangeable: the provider login rejects a client
+address with "No user found associated with the provided email
+address".
+
+type_text({
+  "agent_id": "...",
+  "credential_key": "providerEmail"
+})
 
 type_otp({
   "agent_ids": ["...", "...", "...", "..."],
   "credential_key": "providerOtp"
 })
 
-There is no provider email credential. A provider sign-in scenario
-supplies its email address literally in the scenario description,
-because that account was created earlier in this same run. Type it with
-type_text and "text", exactly as given.
+providerEmail is the EXISTING provider sign-in account. The provider
+REGISTRATION wizard is a different thing entirely: it creates a NEW
+account and must use the generated address written literally into the
+scenario description, never this key.
 
 The runtime resolves the actual value locally.
 
 NEVER use credential_key on a registration, sign-up, onboarding,
 profile or any other data-entry form. Those forms must create NEW
-data, and clientEmail already belongs to an existing account, so
-reusing it makes submission fail with a duplicate-account error.
+data, and clientEmail and providerEmail already belong to existing
+accounts, so reusing one makes submission fail with a duplicate-account
+error.
 
 On such forms, type the literal value supplied in the scenario
 description or test data instead:
