@@ -1223,6 +1223,14 @@ async function main() {
 
     clientOtp:
       process.env.CLIENT_TEST_OTP,
+
+    // The provider sign-in OTP. The bypass value is normally the same
+    // one the client flow uses, so fall back to it rather than making
+    // every deployment configure the identical number twice.
+
+    providerOtp:
+      process.env.PROVIDER_TEST_OTP ||
+      process.env.CLIENT_TEST_OTP,
   };
 
 
@@ -1244,6 +1252,15 @@ async function main() {
   );
 
 
+  console.log(
+    `Provider test OTP configured: ${
+      Boolean(
+        testCredentials.providerOtp
+      )
+    }`
+  );
+
+
   if (
     !testCredentials.clientEmail
   ) {
@@ -1260,6 +1277,16 @@ async function main() {
 
     console.warn(
       "CLIENT_TEST_OTP is not configured."
+    );
+  }
+
+
+  if (
+    !testCredentials.providerOtp
+  ) {
+
+    console.warn(
+      "PROVIDER_TEST_OTP is not configured, and CLIENT_TEST_OTP is not available as a fallback."
     );
   }
 

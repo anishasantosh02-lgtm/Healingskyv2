@@ -125,9 +125,12 @@ const scenario = resolveTemplates(myTemplateObject, data);
 ```
 
 > **Test data vs. credentials.** Generated data is non-secret and is passed to the
-> LLM as literal text. Login credentials (`CLIENT_TEST_EMAIL`, `CLIENT_TEST_OTP`)
-> stay out of the LLM context — the agent references them symbolically via
-> `credential_key` and resolves them locally.
+> LLM as literal text. Login credentials (`CLIENT_TEST_EMAIL`, `CLIENT_TEST_OTP`,
+> `PROVIDER_TEST_OTP`) stay out of the LLM context — the agent references them
+> symbolically via `credential_key` (`clientEmail`, `clientOtp`, `providerOtp`)
+> and resolves them locally. The provider journey signs in as the provider it
+> registered moments earlier, so its email is generated test data rather than a
+> credential; `PROVIDER_TEST_OTP` defaults to `CLIENT_TEST_OTP`.
 
 ---
 

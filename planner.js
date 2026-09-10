@@ -733,6 +733,7 @@ The browser execution agent knows symbolic credential names such as:
 
 clientEmail
 clientOtp
+providerOtp
 
 Those values are NOT planner testData.
 
@@ -742,6 +743,7 @@ email
 clientEmail
 otp
 clientOtp
+providerOtp
 password
 token
 apiKey
@@ -834,6 +836,13 @@ testData:
 {
   "otp": "123456"
 }
+
+
+The provider sign-in flow works the same way, with one difference: its
+email address is NOT a configured credential. A provider requirement
+that spells out the address registered earlier in the run states it
+literally, so keep that address verbatim in the scenario description.
+Only the provider OTP is configured, under the key providerOtp.
 
 
 ============================================================
@@ -1618,6 +1627,7 @@ Important:
       "clientEmail",
       "otp",
       "clientOtp",
+      "providerOtp",
       "password",
       "passcode",
       "token",

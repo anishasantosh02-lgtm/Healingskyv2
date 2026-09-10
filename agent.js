@@ -30,6 +30,7 @@
 //
 // clientEmail
 // clientOtp
+// providerOtp
 //
 // Example:
 //
@@ -41,6 +42,11 @@
 // type_otp({
 //   agent_ids: ["e10", "e11", "e12", "e13"],
 //   credential_key: "clientOtp"
+// })
+//
+// type_otp({
+//   agent_ids: ["e10", "e11", "e12", "e13"],
+//   credential_key: "providerOtp"
 // })
 //
 // agent.js resolves those credential values locally.
@@ -148,6 +154,19 @@ function getCredentialValue(
   }
 
 
+  if (
+    key ===
+    "providerOtp"
+  ) {
+
+    return (
+      testCredentials
+        ?.providerOtp ||
+      null
+    );
+  }
+
+
   return null;
 }
 
@@ -166,6 +185,9 @@ function getSecretValues(
 
     testCredentials
       ?.clientOtp,
+
+    testCredentials
+      ?.providerOtp,
   ]
     .filter(
       (value) =>
@@ -4744,6 +4766,7 @@ const tools = [
             enum: [
               "clientEmail",
               "clientOtp",
+              "providerOtp",
             ],
           },
         },
@@ -4888,6 +4911,7 @@ const tools = [
                   enum: [
                     "clientEmail",
                     "clientOtp",
+                    "providerOtp",
                   ],
                 },
               },
@@ -4957,6 +4981,7 @@ const tools = [
 
             enum: [
               "clientOtp",
+              "providerOtp",
             ],
           },
         },
@@ -5645,6 +5670,7 @@ Configured credential KEYS that may be available:
 
 clientEmail
 clientOtp
+providerOtp
 
 You do NOT know their values.
 
@@ -5666,6 +5692,18 @@ type_otp({
   "agent_ids": ["...", "...", "...", "..."],
   "credential_key": "clientOtp"
 })
+
+On the PROVIDER sign-in flow, use the provider OTP key instead:
+
+type_otp({
+  "agent_ids": ["...", "...", "...", "..."],
+  "credential_key": "providerOtp"
+})
+
+There is no provider email credential. A provider sign-in scenario
+supplies its email address literally in the scenario description,
+because that account was created earlier in this same run. Type it with
+type_text and "text", exactly as given.
 
 The runtime resolves the actual value locally.
 
@@ -5948,7 +5986,8 @@ that is evidence that the option was selected.
 OTP ENTRY
 ============================================================
 
-The client OTP verification page may contain four separate OTP boxes.
+The client and provider OTP verification pages may each contain four
+separate OTP boxes.
 
 If four OTP inputs are shown, identify them from left to right and call:
 
@@ -5956,6 +5995,9 @@ type_otp({
   "agent_ids": ["e1", "e2", "e3", "e4"],
   "credential_key": "clientOtp"
 })
+
+Use "providerOtp" instead whenever the OTP screen belongs to the
+provider sign-in flow, which is the one reached from /provider/login.
 
 Do not attempt to learn or output the actual OTP value.
 
